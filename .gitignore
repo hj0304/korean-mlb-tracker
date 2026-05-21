@@ -67,3 +67,6 @@ ehthumbs.db
 # ---------- Logs ----------
 *.log
 logs/
+
+# ---------- Claude Code ----------
+.claude/settings.local.json
