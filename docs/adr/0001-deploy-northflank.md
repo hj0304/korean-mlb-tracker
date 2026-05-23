@@ -17,13 +17,13 @@
 |---|---|---|---|---|
 | Fly.io | ❌ (1개월 trial 후 유료) | n/a | nrt (Tokyo) | 폐기 |
 | Render Free | ✅ | ⚠ 15분 idle 후 sleep, ~50초 cold start | sin (Singapore) | PRD §6 성능 위배 가능 |
-| Northflank Sandbox | ✅ | ❌ always-on | Asia East | **채택** |
+| Northflank Sandbox | ✅ | ❌ always-on | EU West / US (Asia East는 유료 plan 전용) | **채택** |
 
 ## Decision
 
 **Northflank Sandbox tier**를 백엔드 호스팅으로 사용한다.
 
-- Region: `Asia East`
+- Region: `US Central` (Sandbox plan에선 Asia East가 선택 불가 — EU West와 US만 풀림. 한국에서 RTT ~180ms 예상)
 - Service type: Combined service (Build + Deploy)
 - Source: GitHub `hj0304/korean-mlb-tracker`, branch `main`, auto-deploy ON
 - Build: Dockerfile, build context = `/backend`
@@ -40,7 +40,7 @@
 **Negative**
 - Fly.io 대비 덜 알려진 플랫폼 — README/면접에서 "왜 Northflank?" 설명이 필요 (이 ADR이 그 답)
 - Sandbox 한도(always-on 2 services + 1 database)를 초과하면 유료. 현재는 1 service만 사용
-- Region "Asia East"의 정확한 위치가 공개되지 않음 — 한국 RTT는 배포 후 측정해 README 보완
+- 실제 region은 US Central — 한국에서 RTT ~180ms 가산. API 처리 100ms 가정 시 총 응답 ~280ms로 PRD §6 (<300ms) 가까스로 만족. 실측 후 README 보완
 
 ## Operational Notes
 
