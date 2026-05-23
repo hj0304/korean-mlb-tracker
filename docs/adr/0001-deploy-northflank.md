@@ -40,7 +40,7 @@
 **Negative**
 - Fly.io 대비 덜 알려진 플랫폼 — README/면접에서 "왜 Northflank?" 설명이 필요 (이 ADR이 그 답)
 - Sandbox 한도(always-on 2 services + 1 database)를 초과하면 유료. 현재는 1 service만 사용
-- 실제 region은 US Central — 한국에서 RTT ~180ms 가산. API 처리 100ms 가정 시 총 응답 ~280ms로 PRD §6 (<300ms) 가까스로 만족. 실측 후 README 보완
+- 실제 region은 US Central — 한국에서 warm RTT 실측 ~210ms (`/health` 기준, 3회 측정 후 2·3회차 평균). 첫 호출은 TLS handshake로 ~1.3s. PRD §6 (<300ms)는 warm 상태에서 만족
 
 ## Operational Notes
 
