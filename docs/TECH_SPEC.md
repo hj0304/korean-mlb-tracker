@@ -72,7 +72,7 @@
 |---|---|---|
 | 프론트엔드 호스팅 | Vercel | 충분 |
 | 백엔드 호스팅 | Northflank | Sandbox: always-on 2 services + 1 database, US Central region (Sandbox plan은 EU/US만 선택 가능), 영구 무료 |
-| DB | Supabase | 500MB, 2개 프로젝트 |
+| DB | Supabase | Seoul (ap-northeast-2), Session pooler 사용, 500MB, 2개 프로젝트 |
 | 에러 추적 | Sentry | 5k events/month |
 | 도메인 (옵션) | Cloudflare | $10/year .com |
 | Cron | GitHub Actions | 무료 (퍼블릭 레포) |
