@@ -1,0 +1,39 @@
+name: frontend-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        # Use `npm install` (not `npm ci`): Next.js 16 Turbopack pulls in
+        # platform-specific native deps (e.g. @emnapi/runtime) whose entries
+        # only land in the lockfile when installed on Linux. Generating the
+        # lockfile on Windows leaves Linux-only entries missing, which makes
+        # `npm ci` reject the install. `npm install` is tolerant of this.
+        run: npm install --no-audit --no-fund --prefer-offline
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
