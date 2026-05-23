@@ -18,7 +18,7 @@
                          │ REST (JSON)
                          ▼
         ┌────────────────────────────────┐
-        │    FastAPI (Fly.io)             │  ← API + 비즈니스 로직
+        │    FastAPI (Northflank)         │  ← API + 비즈니스 로직
         │  - /api/v1/players              │
         │  - /api/v1/players/:id/games    │
         └────────┬─────────────────┬──────┘
@@ -50,7 +50,7 @@
 - **MLB-StatsAPI** (toddrob/MLB-StatsAPI)
   - 사유: 가장 안정적이고 활발한 비공식 래퍼. 단, 응답이 deep-nested라 자체 변환 레이어 필요.
 - **APScheduler** (in-proc) 또는 **GitHub Actions cron** (out-of-proc)
-  - 결정: **GitHub Actions cron** 권장 — Fly.io 단일 프로세스에서 스케줄러 돌리면 free tier sleep 이슈
+  - 결정: **GitHub Actions cron** 권장 — 백엔드 단일 프로세스에 스케줄러를 두면 호스팅 재시작/콜드스타트에 잡 유실 위험. 외부 cron 분리가 안전
 - **httpx** (외부 HTTP 호출용, 비동기)
 - **structlog** + **Sentry SDK** (관측 가능성)
 
@@ -71,7 +71,7 @@
 | 구성요소 | 서비스 | 무료 한도 |
 |---|---|---|
 | 프론트엔드 호스팅 | Vercel | 충분 |
-| 백엔드 호스팅 | Fly.io | shared-cpu-1x 256MB 3대 무료 |
+| 백엔드 호스팅 | Northflank | Sandbox: always-on 2 services + 1 database, Asia East region, 영구 무료 |
 | DB | Supabase | 500MB, 2개 프로젝트 |
 | 에러 추적 | Sentry | 5k events/month |
 | 도메인 (옵션) | Cloudflare | $10/year .com |
@@ -175,7 +175,7 @@ OpenAPI는 FastAPI가 `/docs`에서 자동 생성. 프론트 측 fetch 함수는
 **GitHub Actions cron 사용**:
 - 장점: 별도 인프라 불필요. 실패 시 GitHub 이슈 자동 생성. 무료.
 - 백엔드 컨테이너에 `python -m app.jobs.run --job daily_games` 형태로 명령 실행
-- 워크플로우는 FastAPI 컨테이너 내부 명령을 Fly.io SSH로 실행하거나, 잡 전용 짧은 Python 스크립트를 Actions runner에서 직접 실행 (DB 직접 쓰기)
+- 워크플로우는 잡 전용 짧은 Python 스크립트를 Actions runner에서 직접 실행 (DB에 직접 쓰기). 백엔드 컨테이너 SSH 의존성 없음
 
 ### 5.3 멱등성
 
@@ -238,8 +238,7 @@ korean-mlb-tracker/
 │   │   ├── integration/
 │   │   └── fixtures/                # MLB API 응답 모의 (snapshots)
 │   ├── pyproject.toml
-│   ├── Dockerfile
-│   └── fly.toml
+│   └── Dockerfile
 │
 ├── frontend/
 │   ├── app/
@@ -266,7 +265,7 @@ korean-mlb-tracker/
     └── workflows/
         ├── backend-ci.yml           # lint + test
         ├── frontend-ci.yml          # lint + build + test
-        ├── deploy-backend.yml       # main 머지 시 Fly.io 배포
+        ├── deploy-backend.yml       # main 머지 시 Northflank 자동 배포 (GitHub auto-deploy)
         ├── deploy-frontend.yml      # main 머지 시 Vercel은 자동
         └── cron-etl.yml             # 스케줄 잡
 ```
@@ -316,5 +315,6 @@ NEXT_PUBLIC_SENTRY_DSN=
 | 1 | 백엔드/프론트 분리 (모놀리식 Next.js 아님) | 백엔드 어필 + 잡 분리 |
 | 2 | DB에 캐싱, 사용자→MLB API 직접 호출 없음 | 비공식 API 안정성 + 응답 속도 |
 | 3 | JSONB로 스탯 저장 | 스키마 변화 대응 |
-| 4 | GitHub Actions cron (vs in-proc) | Fly.io 무료티어 sleep 회피 |
+| 4 | GitHub Actions cron (vs in-proc) | 호스팅 콜드스타트/재시작과 ETL 잡 결합 분리 |
 | 5 | shadcn/ui (vs MUI/Chakra) | 모던 룩 + 코드 컨트롤 |
+| 6 | Fly.io → Northflank (백엔드 호스팅) | Fly 무료 정책이 trial 후 유료 전환. Northflank Sandbox는 영구 무료 + always-on. 자세히는 `docs/adr/0001-deploy-northflank.md` |

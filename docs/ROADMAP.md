@@ -20,7 +20,7 @@
 - [ ] **S0-01** GitHub 레포 생성, 라이선스(MIT), `.gitignore`
 - [ ] **S0-02** 모노레포 폴더 구조 생성 (backend/, frontend/, docs/)
 - [ ] **S0-03** `backend`: `pyproject.toml` (uv 또는 poetry), FastAPI 최소 앱, `/health` 엔드포인트
-- [ ] **S0-04** `backend`: Dockerfile, fly.toml, Fly.io 첫 배포
+- [ ] **S0-04** `backend`: Dockerfile, Northflank 첫 배포
 - [ ] **S0-05** `backend`: GitHub Actions — lint(ruff) + test(pytest, 빈 테스트 1개)
 - [ ] **S0-06** `frontend`: `create-next-app@latest --typescript --tailwind --app`, shadcn/ui init
 - [ ] **S0-07** `frontend`: Vercel 연결, 자동 배포 확인
@@ -155,6 +155,6 @@ P1/P2 기능 중 우선순위 높은 것 1~2개씩. 시즌 데이터로 학습�
 | 리스크 | 영향 | 완화 |
 |---|---|---|
 | MLB Stats API 갑작스러운 변경 | 높음 | snapshot test로 빠르게 감지, 백업 소스(baseball-reference 스크래핑) 가능성 조사 |
-| Fly.io 무료티어 sleep으로 ETL 누락 | 중간 | GitHub Actions cron으로 외부 트리거 |
+| 백엔드 호스팅 콜드스타트/장애로 ETL 누락 | 중간 | GitHub Actions cron으로 외부 트리거 (Northflank Sandbox는 sleep 없음) |
 | 처음 배우는 프론트엔드 학습 곡선 | 중간 | shadcn/ui 적극 활용, 욕심 부리지 않기 (애니메이션 등은 P2) |
 | 스코프 크리프 | 높음 | PRD의 비목표 섹션 자주 본다. P2는 v1 출시 전에 손대지 않는다. |

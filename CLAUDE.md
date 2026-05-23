@@ -89,7 +89,7 @@ Primary documents:
 | DB | PostgreSQL (Supabase) |
 | ETL | GitHub Actions cron → `python -m app.jobs.run --job=<name>` |
 | Frontend | Next.js 14 (App Router), TypeScript strict, Tailwind CSS, shadcn/ui, TanStack Query v5, Recharts |
-| Deploy | Vercel (frontend), Fly.io (backend), Supabase (db) |
+| Deploy | Vercel (frontend), Northflank (backend), Supabase (db) |
 | Observability | Sentry, Vercel Analytics, structlog |
 | Tests | pytest (backend), Vitest (frontend) |
 
