@@ -88,7 +88,7 @@ Primary documents:
 | External API | MLB Stats API (`statsapi.mlb.com`), via `MLB-StatsAPI` package or `httpx` |
 | DB | PostgreSQL (Supabase) |
 | ETL | GitHub Actions cron → `python -m app.jobs.run --job=<name>` |
-| Frontend | Next.js 14 (App Router), TypeScript strict, Tailwind CSS, shadcn/ui, TanStack Query v5, Recharts |
+| Frontend | Next.js 16 (App Router), TypeScript strict, Tailwind CSS v4, shadcn/ui, TanStack Query v5, Recharts |
 | Deploy | Vercel (frontend), Northflank (backend), Supabase (db) |
 | Observability | Sentry, Vercel Analytics, structlog |
 | Tests | pytest (backend), Vitest (frontend) |

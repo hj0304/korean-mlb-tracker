@@ -56,7 +56,7 @@
 
 ### 2.2 프론트엔드
 
-- **Next.js 14 App Router + TypeScript (strict)**
+- **Next.js 16 App Router + TypeScript (strict)**
   - 사유: 처음 배워도 자료 가장 많음. SSR/CSR 모두 학습. Vercel 배포 0설정.
 - **Tailwind CSS + shadcn/ui + lucide-react**
   - 사유: shadcn/ui로 디자인 시간 절약, 모던 룩 보장
