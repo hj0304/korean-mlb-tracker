@@ -17,16 +17,16 @@
 
 ### 작업
 
-- [ ] **S0-01** GitHub 레포 생성, 라이선스(MIT), `.gitignore`
-- [ ] **S0-02** 모노레포 폴더 구조 생성 (backend/, frontend/, docs/)
-- [ ] **S0-03** `backend`: `pyproject.toml` (uv 또는 poetry), FastAPI 최소 앱, `/health` 엔드포인트
-- [ ] **S0-04** `backend`: Dockerfile, Northflank 첫 배포
-- [ ] **S0-05** `backend`: GitHub Actions — lint(ruff) + test(pytest, 빈 테스트 1개)
-- [ ] **S0-06** `frontend`: `create-next-app@latest --typescript --tailwind --app`, shadcn/ui init
+- [x] **S0-01** GitHub 레포 생성, 라이선스(MIT), `.gitignore`
+- [x] **S0-02** 모노레포 폴더 구조 생성 (backend/, frontend/, docs/)
+- [x] **S0-03** `backend`: `pyproject.toml` (uv 또는 poetry), FastAPI 최소 앱, `/health` 엔드포인트
+- [x] **S0-04** `backend`: Dockerfile, Northflank 첫 배포
+- [x] **S0-05** `backend`: GitHub Actions — lint(ruff) + test(pytest, 빈 테스트 1개)
+- [x] **S0-06** `frontend`: `create-next-app@latest --typescript --tailwind --app`, shadcn/ui init
 - [ ] **S0-07** `frontend`: Vercel 연결, 자동 배포 확인
-- [ ] **S0-08** `frontend`: GitHub Actions — lint + typecheck + build
-- [ ] **S0-09** `db`: Supabase 프로젝트 생성, 연결 문자열 확보
-- [ ] **S0-10** `db`: Alembic 셋업, 빈 첫 마이그레이션
+- [x] **S0-08** `frontend`: GitHub Actions — lint + typecheck + build
+- [x] **S0-09** `db`: Supabase 프로젝트 생성, 연결 문자열 확보
+- [x] **S0-10** `db`: Alembic 셋업, 빈 첫 마이그레이션
 - [ ] **S0-11** Sentry 프로젝트 생성 (백/프 둘 다), DSN 환경변수 연결
 - [ ] **S0-12** `README.md` 초안 (스크린샷 자리만 비워두기), 배지(CI, Vercel, license)
 
