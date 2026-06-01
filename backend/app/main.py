@@ -18,10 +18,3 @@ app = FastAPI(title="Korean MLB Tracker API")
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
-
-
-# TEMPORARY (S0-11 verification): raises so we can confirm Sentry receives the
-# event from the deployed backend. Remove once Sentry is verified.
-@app.get("/sentry-debug")
-def sentry_debug() -> None:
-    raise RuntimeError("Sentry backend verification error")
