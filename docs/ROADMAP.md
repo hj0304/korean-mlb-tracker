@@ -23,11 +23,11 @@
 - [x] **S0-04** `backend`: Dockerfile, Northflank 첫 배포
 - [x] **S0-05** `backend`: GitHub Actions — lint(ruff) + test(pytest, 빈 테스트 1개)
 - [x] **S0-06** `frontend`: `create-next-app@latest --typescript --tailwind --app`, shadcn/ui init
-- [ ] **S0-07** `frontend`: Vercel 연결, 자동 배포 확인
+- [x] **S0-07** `frontend`: Vercel 연결, 자동 배포 확인
 - [x] **S0-08** `frontend`: GitHub Actions — lint + typecheck + build
 - [x] **S0-09** `db`: Supabase 프로젝트 생성, 연결 문자열 확보
 - [x] **S0-10** `db`: Alembic 셋업, 빈 첫 마이그레이션
-- [ ] **S0-11** Sentry 프로젝트 생성 (백/프 둘 다), DSN 환경변수 연결
+- [x] **S0-11** Sentry 프로젝트 생성 (백/프 둘 다), DSN 환경변수 연결
 - [ ] **S0-12** `README.md` 초안 (스크린샷 자리만 비워두기), 배지(CI, Vercel, license)
 
 **산출물**: 배포된 도메인 2개 (`api-staging.fly.dev`, `[name].vercel.app`), 그린 CI 배지.
