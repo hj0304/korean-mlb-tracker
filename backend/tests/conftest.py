@@ -64,6 +64,7 @@ async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
                 birth_date=date(1999, 1, 27),
             )
         )
+        await session.flush()  # parent row must exist before FK-bearing children
         session.add(
             SeasonStats(
                 player_id=808975,
