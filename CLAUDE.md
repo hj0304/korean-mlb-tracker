@@ -166,7 +166,7 @@ uv run python -m app.jobs.run --job=season_stats
 - MLB Stats API is **unofficial**: no key, no SLA, undocumented but stable.
 - Base: `https://statsapi.mlb.com/api/v1`
 - `sportId`: 1 = MLB, 11 = AAA, 12 = AA, 13 = High-A, 14 = Low-A.
-- Korean player IDs seeded in `app/core/config.py` (`KOREAN_PLAYER_IDS`).
+- Korean players seeded in `app/core/config.py` (`KOREAN_PLAYERS`, MLB id → Korean name).
 - **Never call this API from the user-request path.** Always hit our DB. ETL keeps DB fresh.
 - New endpoint/field → save raw JSON to `tests/fixtures/mlb_responses/` + add snapshot test.
 
