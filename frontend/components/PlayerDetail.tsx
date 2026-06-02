@@ -1,5 +1,7 @@
 "use client";
 
+import { ErrorState } from "@/components/ErrorState";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -17,27 +19,70 @@ function stat(stats: { [key: string]: unknown }, key: string): string {
   return value === null || value === undefined ? "-" : String(value);
 }
 
-// [stat key, Korean label] for the season summary.
+// [stat key, Korean label] for the season summary grid. The full 34-field stat
+// object is stored; this is the meaningful batting subset (incl. BB/SO).
 const SEASON_HITTING: [string, string][] = [
+  ["gamesPlayed", "경기"],
+  ["plateAppearances", "타석"],
+  ["atBats", "타수"],
+  ["runs", "득점"],
+  ["hits", "안타"],
+  ["doubles", "2루타"],
+  ["triples", "3루타"],
+  ["homeRuns", "홈런"],
+  ["rbi", "타점"],
+  ["baseOnBalls", "볼넷"],
+  ["strikeOuts", "삼진"],
+  ["stolenBases", "도루"],
   ["avg", "타율"],
   ["obp", "출루율"],
   ["slg", "장타율"],
   ["ops", "OPS"],
+];
+
+// Per-game box-score line columns.
+const GAME_COLS: [string, string][] = [
+  ["atBats", "타수"],
+  ["runs", "득점"],
+  ["hits", "안타"],
   ["homeRuns", "홈런"],
   ["rbi", "타점"],
-  ["hits", "안타"],
-  ["stolenBases", "도루"],
+  ["baseOnBalls", "볼넷"],
+  ["strikeOuts", "삼진"],
 ];
+
+function DetailSkeleton() {
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-9 w-40" />
+        <Skeleton className="h-4 w-28" />
+        <Skeleton className="h-4 w-56" />
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Skeleton key={i} className="h-16 w-full rounded-md" />
+        ))}
+      </div>
+      <Skeleton className="h-40 w-full rounded-md" />
+    </div>
+  );
+}
 
 export function PlayerDetail({ playerId }: { playerId: number }) {
   const player = usePlayer(playerId);
   const games = usePlayerGames(playerId);
 
   if (player.isLoading) {
-    return <p className="text-muted-foreground">선수 정보를 불러오는 중…</p>;
+    return <DetailSkeleton />;
   }
   if (player.error || !player.data) {
-    return <p className="text-destructive">선수 정보를 불러오지 못했습니다.</p>;
+    return (
+      <ErrorState
+        message="선수 정보를 불러오지 못했습니다."
+        onRetry={() => void player.refetch()}
+      />
+    );
   }
 
   const p = player.data;
@@ -79,9 +124,12 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">최근 경기</h2>
         {games.isLoading ? (
-          <p className="text-sm text-muted-foreground">경기 기록을 불러오는 중…</p>
+          <Skeleton className="h-40 w-full rounded-md" />
         ) : games.error ? (
-          <p className="text-sm text-destructive">경기 기록을 불러오지 못했습니다.</p>
+          <ErrorState
+            message="경기 기록을 불러오지 못했습니다."
+            onRetry={() => void games.refetch()}
+          />
         ) : !games.data || games.data.length === 0 ? (
           <p className="text-sm text-muted-foreground">최근 경기 기록이 없습니다.</p>
         ) : (
@@ -90,10 +138,11 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
               <TableRow>
                 <TableHead>날짜</TableHead>
                 <TableHead>상대</TableHead>
-                <TableHead className="text-right">타수</TableHead>
-                <TableHead className="text-right">안타</TableHead>
-                <TableHead className="text-right">홈런</TableHead>
-                <TableHead className="text-right">타점</TableHead>
+                {GAME_COLS.map(([key, label]) => (
+                  <TableHead key={key} className="text-right">
+                    {label}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -103,10 +152,11 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
                   <TableCell>
                     {g.is_home ? "vs" : "@"} {g.opponent_id ?? "-"}
                   </TableCell>
-                  <TableCell className="text-right">{stat(g.stats, "atBats")}</TableCell>
-                  <TableCell className="text-right">{stat(g.stats, "hits")}</TableCell>
-                  <TableCell className="text-right">{stat(g.stats, "homeRuns")}</TableCell>
-                  <TableCell className="text-right">{stat(g.stats, "rbi")}</TableCell>
+                  {GAME_COLS.map(([key]) => (
+                    <TableCell key={key} className="text-right">
+                      {stat(g.stats, key)}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
