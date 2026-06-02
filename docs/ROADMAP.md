@@ -58,7 +58,7 @@
 #### 프론트엔드
 - [x] **S1-11** `lib/api.ts`: 백엔드 fetch wrapper, 에러 처리
 - [x] **S1-12** `openapi-typescript`로 타입 자동 생성 (npm script)
-- [ ] **S1-13** TanStack Query Provider, 글로벌 에러 바운더리
+- [x] **S1-13** TanStack Query Provider, 글로벌 에러 바운더리
 - [ ] **S1-14** `app/page.tsx`: 선수 카드 리스트 (PlayerCard 컴포넌트)
 - [ ] **S1-15** `app/players/[id]/page.tsx`: 선수 상세 (시즌 + 최근 경기 테이블)
 - [ ] **S1-16** 로딩 스켈레톤 + 에러 상태 UI
