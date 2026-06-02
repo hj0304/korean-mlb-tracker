@@ -3,10 +3,11 @@
 import argparse
 import asyncio
 
-from app.jobs import roster_sync
+from app.jobs import roster_sync, season_stats
 
 JOBS = {
     "roster_sync": roster_sync.run,
+    "season_stats": season_stats.run,
 }
 
 
