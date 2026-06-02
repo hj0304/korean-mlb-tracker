@@ -41,17 +41,17 @@
 ### 작업
 
 #### 백엔드
-- [ ] **S1-01** DB 모델: `players`, `teams`, `season_stats`, `game_logs`, `etl_runs`
-- [ ] **S1-02** Alembic 마이그레이션 작성·적용
-- [ ] **S1-03** `services/mlb_client.py`: MLB Stats API 호출 함수 (httpx). 일단 사용할 엔드포인트 3개만:
+- [x] **S1-01** DB 모델: `players`, `teams`, `season_stats`, `game_logs`, `etl_runs`
+- [x] **S1-02** Alembic 마이그레이션 작성·적용
+- [x] **S1-03** `services/mlb_client.py`: MLB Stats API 호출 함수 (httpx). 일단 사용할 엔드포인트 3개만:
   - `/people/{id}` (선수 정보)
   - `/people/{id}/stats?stats=season&group=hitting,pitching&season=2026`
   - `/schedule?sportId=1&teamId=X&date=YYYY-MM-DD` + `/game/{gamePk}/boxscore`
-- [ ] **S1-04** `services/stats_transformer.py`: MLB JSON → 우리 스키마. **snapshot test** 셋업.
-- [ ] **S1-05** `jobs/roster_sync.py`: 시드 ID 5명을 DB에 upsert
-- [ ] **S1-06** `jobs/season_stats.py`: 시즌 스탯 동기화
-- [ ] **S1-07** `jobs/daily_games.py`: 어제 경기 동기화 (한 선수 먼저, 그 다음 5명)
-- [ ] **S1-08** API: `GET /api/v1/players` (목록), `GET /api/v1/players/{id}` (상세)
+- [x] **S1-04** `services/stats_transformer.py`: MLB JSON → 우리 스키마. **snapshot test** 셋업.
+- [x] **S1-05** `jobs/roster_sync.py`: 시드 ID 5명을 DB에 upsert
+- [x] **S1-06** `jobs/season_stats.py`: 시즌 스탯 동기화
+- [x] **S1-07** `jobs/daily_games.py`: 어제 경기 동기화 (한 선수 먼저, 그 다음 5명)
+- [x] **S1-08** API: `GET /api/v1/players` (목록), `GET /api/v1/players/{id}` (상세)
 - [ ] **S1-09** API: `GET /api/v1/players/{id}/games?since=` (경기 로그)
 - [ ] **S1-10** pytest: transformer 단위 테스트, API 통합 테스트 1개
 
