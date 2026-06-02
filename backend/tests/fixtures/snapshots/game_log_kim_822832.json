@@ -1,0 +1,43 @@
+[
+  {
+    "player_id": 808975,
+    "game_id": 822832,
+    "game_date": "2026-04-06",
+    "opponent_id": 141,
+    "is_home": false,
+    "group_name": "hitting",
+    "stats": {
+      "summary": "2-4 | BB, R",
+      "gamesPlayed": 1,
+      "flyOuts": 2,
+      "groundOuts": 0,
+      "airOuts": 2,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "atBats": 4,
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "plateAppearances": 5,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 2,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "catchersInterference": 0,
+      "pickoffs": 0,
+      "atBatsPerHomeRun": "-.--",
+      "popOuts": 0,
+      "lineOuts": 0
+    }
+  }
+]
