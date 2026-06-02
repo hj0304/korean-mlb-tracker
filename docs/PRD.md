@@ -68,6 +68,7 @@
 | F-202 | 선수 간 비교 뷰 |
 | F-203 | 시즌 추이 그래프 (월별) |
 | F-204 | i18n (영어) |
+| F-205 | 세이버메트릭스(고급 지표) 표시 — WAR·wOBA·xwOBA 등. MLB Stats API의 sabermetrics/Statcast 타입에서 수집 |
 
 ## 6. 비기능적 요구사항
 

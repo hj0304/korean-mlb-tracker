@@ -138,6 +138,7 @@ P1/P2 기능 중 우선순위 높은 것 1~2개씩. 시즌 데이터로 학습�
 - 선수 간 비교 페이지
 - 월별 추이 그래프
 - 영문 지원
+- 세이버메트릭스(고급 지표) 표시 — MLB Stats API의 `stats=sabermetrics`(WAR·wOBA·wRAA 등) / Statcast expected(xBA·xSLG·xwOBA 등) 타입을 `mlb_client`에 추가 수집 → transformer/스키마/상세 페이지 확장. 실제 응답을 fixture로 받아 제공 필드부터 확인 (PRD F-205)
 
 ---
 
