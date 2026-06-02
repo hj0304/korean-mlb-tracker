@@ -12,7 +12,7 @@ from typing import Any
 from fastapi.testclient import TestClient
 
 from app.api.deps import get_session
-from app.db.models import Player, SeasonStats
+from app.db.models import GameLog, Player, SeasonStats
 from app.main import app
 
 
@@ -116,3 +116,36 @@ def test_get_player_not_found() -> None:
     finally:
         app.dependency_overrides.clear()
     assert r.status_code == 404
+
+
+def test_list_player_games() -> None:
+    log = GameLog(
+        player_id=808975,
+        game_id=822832,
+        game_date=date(2026, 4, 6),
+        opponent_id=141,
+        is_home=False,
+        group_name="hitting",
+        stats={"hits": 2, "homeRuns": 1},
+    )
+    _use(_FakeSession(execute_items=[log]))
+    try:
+        r = TestClient(app).get("/api/v1/players/808975/games")
+    finally:
+        app.dependency_overrides.clear()
+    assert r.status_code == 200
+    body = r.json()
+    assert body[0]["game_id"] == 822832
+    assert body[0]["game_date"] == "2026-04-06"
+    assert body[0]["is_home"] is False
+    assert body[0]["stats"]["homeRuns"] == 1
+
+
+def test_list_player_games_empty_with_since() -> None:
+    _use(_FakeSession(execute_items=[]))
+    try:
+        r = TestClient(app).get("/api/v1/players/808975/games?since=2026-05-01")
+    finally:
+        app.dependency_overrides.clear()
+    assert r.status_code == 200
+    assert r.json() == []

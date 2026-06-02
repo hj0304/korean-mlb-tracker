@@ -52,7 +52,7 @@
 - [x] **S1-06** `jobs/season_stats.py`: 시즌 스탯 동기화
 - [x] **S1-07** `jobs/daily_games.py`: 어제 경기 동기화 (한 선수 먼저, 그 다음 5명)
 - [x] **S1-08** API: `GET /api/v1/players` (목록), `GET /api/v1/players/{id}` (상세)
-- [ ] **S1-09** API: `GET /api/v1/players/{id}/games?since=` (경기 로그)
+- [x] **S1-09** API: `GET /api/v1/players/{id}/games?since=` (경기 로그)
 - [ ] **S1-10** pytest: transformer 단위 테스트, API 통합 테스트 1개
 
 #### 프론트엔드

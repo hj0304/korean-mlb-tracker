@@ -1,13 +1,15 @@
 """Players API: list and detail."""
 
 from collections.abc import Sequence
+from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_session
-from app.db.models import Player, SeasonStats
+from app.db.models import GameLog, Player, SeasonStats
+from app.schemas.game import GameLogOut
 from app.schemas.player import PlayerDetailOut, PlayerOut, SeasonStatsOut
 
 router = APIRouter(prefix="/api/v1", tags=["players"])
@@ -38,3 +40,17 @@ async def get_player(
         birth_date=player.birth_date,
         season_stats=[SeasonStatsOut.model_validate(s) for s in result.scalars().all()],
     )
+
+
+@router.get("/players/{player_id}/games", response_model=list[GameLogOut])
+async def list_player_games(
+    player_id: int,
+    since: date | None = None,
+    session: AsyncSession = Depends(get_session),
+) -> Sequence[GameLog]:
+    stmt = select(GameLog).where(GameLog.player_id == player_id)
+    if since is not None:
+        stmt = stmt.where(GameLog.game_date >= since)
+    stmt = stmt.order_by(GameLog.game_date.desc(), GameLog.group_name)
+    result = await session.execute(stmt)
+    return result.scalars().all()
