@@ -1,6 +1,14 @@
-// Single backend API client (see CLAUDE.md). Endpoint-typed wrappers and
-// OpenAPI-generated response types are added in later tickets; this is the
-// generic fetch + error-handling core they build on.
+// Single backend API client (see CLAUDE.md). The generic fetch + error-handling
+// core; endpoint-typed query hooks build on it in lib/queries.ts (S1-13).
+
+import type { components } from "./api.types"
+
+// Friendly aliases for the OpenAPI-generated response schemas. Regenerate
+// api.types.ts with `npm run gen:types` after the backend API changes.
+export type Player = components["schemas"]["PlayerOut"]
+export type PlayerDetail = components["schemas"]["PlayerDetailOut"]
+export type GameLog = components["schemas"]["GameLogOut"]
+export type SeasonStats = components["schemas"]["SeasonStatsOut"]
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"
 
