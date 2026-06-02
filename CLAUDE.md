@@ -172,7 +172,7 @@ uv run python -m app.jobs.run --job=season_stats
 
 ### Current Sprint
 
-See `docs/ROADMAP.md`. Currently: **Sprint 0**. First ticket: **S0-01**.
+See `docs/ROADMAP.md` (source of truth for per-ticket status). Currently: **Sprint 1** (MVP — 김혜성 end-to-end). Sprint 0 complete; Sprint 1 backend (S1-01–S1-10) and frontend (S1-11–S1-16) done, S1-17–S1-20 remaining.
 
 When I say "start the next ticket", pick the lowest-numbered unchecked one in the current sprint.
 
