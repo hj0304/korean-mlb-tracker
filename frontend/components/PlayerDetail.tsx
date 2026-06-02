@@ -40,15 +40,22 @@ const SEASON_HITTING: [string, string][] = [
   ["ops", "OPS"],
 ];
 
-// Per-game box-score line columns.
+// Per-game box-score line columns. Wide on purpose (the table scrolls
+// horizontally); curated from the 31 boxscore fields to the meaningful ones.
 const GAME_COLS: [string, string][] = [
+  ["plateAppearances", "타석"],
   ["atBats", "타수"],
   ["runs", "득점"],
   ["hits", "안타"],
+  ["doubles", "2B"],
+  ["triples", "3B"],
   ["homeRuns", "홈런"],
   ["rbi", "타점"],
+  ["totalBases", "루타"],
   ["baseOnBalls", "볼넷"],
   ["strikeOuts", "삼진"],
+  ["stolenBases", "도루"],
+  ["groundIntoDoublePlay", "병살"],
 ];
 
 function DetailSkeleton() {
