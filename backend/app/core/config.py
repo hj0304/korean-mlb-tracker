@@ -5,6 +5,15 @@ import certifi
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Korean players we track, MLB player ID -> Korean name. MLB data has no Korean
+# names, so they are mapped here by hand. MiLB prospects are added in S2-01.
+KOREAN_PLAYERS: dict[int, str] = {
+    808975: "김혜성",
+    808982: "이정후",
+    673490: "김하성",
+    823550: "송성문",
+}
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
