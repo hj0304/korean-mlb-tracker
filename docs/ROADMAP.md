@@ -62,7 +62,7 @@
 - [x] **S1-14** `app/page.tsx`: 선수 카드 리스트 (PlayerCard 컴포넌트)
 - [x] **S1-15** `app/players/[id]/page.tsx`: 선수 상세 (시즌 + 최근 경기 테이블)
 - [x] **S1-16** 로딩 스켈레톤 + 에러 상태 UI
-- [ ] **S1-17** 모바일 반응형 확인 (Chrome devtools 375px)
+- [x] **S1-17** 모바일 반응형 확인 (Chrome devtools 375px)
 
 #### 운영
 - [ ] **S1-18** GitHub Actions cron: `daily_games` 매일 KST 12시 실행
