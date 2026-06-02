@@ -56,7 +56,7 @@
 - [x] **S1-10** pytest: transformer 단위 테스트, API 통합 테스트 1개
 
 #### 프론트엔드
-- [ ] **S1-11** `lib/api.ts`: 백엔드 fetch wrapper, 에러 처리
+- [x] **S1-11** `lib/api.ts`: 백엔드 fetch wrapper, 에러 처리
 - [ ] **S1-12** `openapi-typescript`로 타입 자동 생성 (npm script)
 - [ ] **S1-13** TanStack Query Provider, 글로벌 에러 바운더리
 - [ ] **S1-14** `app/page.tsx`: 선수 카드 리스트 (PlayerCard 컴포넌트)
