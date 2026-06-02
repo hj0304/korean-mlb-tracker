@@ -46,13 +46,16 @@ async def get_season_stats(
 
 
 async def get_schedule(
-    client: httpx.AsyncClient, team_id: int, date: str, sport_id: int = 1
+    client: httpx.AsyncClient, date: str, team_id: int | None = None, sport_id: int = 1
 ) -> dict[str, Any]:
-    """Fetch a team's games on a date: ``/schedule?sportId=&teamId=&date=``.
+    """Fetch games on a date: ``/schedule?sportId=&date=[&teamId=]``.
 
     ``date`` is ``YYYY-MM-DD``. ``sport_id`` 1 = MLB, 11/12/13/14 = MiLB levels.
+    Omit ``team_id`` to get every game for the sport that day.
     """
-    params = {"sportId": sport_id, "teamId": team_id, "date": date}
+    params: dict[str, Any] = {"sportId": sport_id, "date": date}
+    if team_id is not None:
+        params["teamId"] = team_id
     return await _get(client, "schedule", params)
 
 

@@ -42,7 +42,7 @@ def test_get_season_stats_params() -> None:
 
 
 def test_get_schedule_params() -> None:
-    req, _ = _call(mlb_client.get_schedule, 119, "2026-05-18")
+    req, _ = _call(mlb_client.get_schedule, "2026-05-18", team_id=119)
     assert req.url.path == "/api/v1/schedule"
     params = dict(req.url.params)
     assert params["sportId"] == "1"
