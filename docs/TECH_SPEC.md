@@ -275,12 +275,13 @@ korean-mlb-tracker/
 ### 백엔드 (.env)
 ```
 DATABASE_URL=postgresql+asyncpg://...
-SENTRY_DSN=
 LOG_LEVEL=INFO
-MLB_API_BASE=https://statsapi.mlb.com/api/v1
-KOREAN_PLAYER_IDS=672275,808967,673490,672356,808982  # 시드 데이터, 점진 자동화
-ALLOWED_ORIGINS=https://korean-mlb.example.com
+SENTRY_DSN=
+SENTRY_ENVIRONMENT=development
+CORS_ALLOW_ORIGINS=http://localhost:3000   # 쉼표 구분 허용 오리진
 ```
+> MLB API base URL과 한국인 선수 시드 목록은 환경변수가 아니라 코드에 하드코딩돼 있다:
+> `services/mlb_client.py`의 `BASE_URL`, `core/config.py`의 `KOREAN_PLAYERS`(MLB id → 한글 이름 dict).
 
 ### 프론트엔드 (.env.local)
 ```
