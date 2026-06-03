@@ -36,6 +36,36 @@ def transform_season_stats(payload: dict[str, Any], player_id: int) -> list[dict
     return rows
 
 
+def transform_year_by_year(payload: dict[str, Any], player_id: int) -> list[dict[str, Any]]:
+    """yearByYear response -> ``season_stats`` rows, one per (season, group).
+
+    MLB only (``sportId`` 1). For a season split across teams the API adds a
+    combined ``numTeams`` split; we keep that so each season is a single row.
+    """
+    rows: list[dict[str, Any]] = []
+    for group in payload.get("stats", []):
+        group_name = group["group"]["displayName"]
+        by_season: dict[int, dict[str, Any]] = {}
+        for split in group.get("splits", []):
+            if split.get("sport", {}).get("id") != 1:
+                continue
+            season = int(split["season"])
+            if "numTeams" in split:
+                by_season[season] = split  # combined multi-team total wins
+            elif season not in by_season:
+                by_season[season] = split
+        for season, split in by_season.items():
+            rows.append(
+                {
+                    "player_id": player_id,
+                    "season": season,
+                    "group_name": group_name,
+                    "stats": split["stat"],
+                }
+            )
+    return rows
+
+
 def transform_game_log(
     boxscore: dict[str, Any], player_id: int, game_id: int, game_date: str
 ) -> list[dict[str, Any]]:

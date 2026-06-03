@@ -41,6 +41,14 @@ def test_get_season_stats_params() -> None:
     assert params["season"] == "2026"
 
 
+def test_get_year_by_year_params() -> None:
+    req, _ = _call(mlb_client.get_year_by_year, 673490)
+    assert req.url.path == "/api/v1/people/673490/stats"
+    params = dict(req.url.params)
+    assert params["stats"] == "yearByYear"
+    assert params["group"] == "hitting,pitching"
+
+
 def test_get_schedule_params() -> None:
     req, _ = _call(mlb_client.get_schedule, "2026-05-18", team_id=119)
     assert req.url.path == "/api/v1/schedule"

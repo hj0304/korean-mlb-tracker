@@ -18,6 +18,23 @@ def test_transform_season_stats_snapshot() -> None:
     assert result == _load(SNAPSHOTS / "season_hitting_kim_2026.json")
 
 
+def test_transform_year_by_year_snapshot() -> None:
+    payload = _load(FIXTURES / "yearbyyear_kim_hs.json")
+    result = stats_transformer.transform_year_by_year(payload, player_id=673490)
+    assert result == _load(SNAPSHOTS / "yearbyyear_kim_hs.json")
+
+
+def test_transform_year_by_year_combines_multi_team_season() -> None:
+    payload = _load(FIXTURES / "yearbyyear_kim_hs.json")
+    rows = stats_transformer.transform_year_by_year(payload, player_id=673490)
+    # one row per season (2021-2026), even though 2025 was split across two teams
+    assert sorted(r["season"] for r in rows) == [2021, 2022, 2023, 2024, 2025, 2026]
+    # 2025 uses the combined numTeams total (.234 / 48 G), not a single team's split
+    y2025 = next(r for r in rows if r["season"] == 2025)
+    assert y2025["stats"]["avg"] == ".234"
+    assert y2025["stats"]["gamesPlayed"] == 48
+
+
 def test_transform_game_log_snapshot() -> None:
     box = _load(FIXTURES / "boxscore_822832.json")
     result = stats_transformer.transform_game_log(

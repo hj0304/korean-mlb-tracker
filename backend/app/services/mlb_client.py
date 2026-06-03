@@ -45,6 +45,16 @@ async def get_season_stats(
     return await _get(client, f"people/{player_id}/stats", params)
 
 
+async def get_year_by_year(
+    client: httpx.AsyncClient,
+    player_id: int,
+    groups: tuple[str, ...] = ("hitting", "pitching"),
+) -> dict[str, Any]:
+    """Fetch per-season totals for every season: ``/people/{id}/stats?stats=yearByYear``."""
+    params = {"stats": "yearByYear", "group": ",".join(groups)}
+    return await _get(client, f"people/{player_id}/stats", params)
+
+
 async def get_schedule(
     client: httpx.AsyncClient, date: str, team_id: int | None = None, sport_id: int = 1
 ) -> dict[str, Any]:
