@@ -1,6 +1,7 @@
 "use client";
 
 import { ErrorState } from "@/components/ErrorState";
+import { RecentGamesChart } from "@/components/RecentGamesChart";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -134,6 +135,24 @@ function GamesTable({ playerId }: { playerId: number }) {
   );
 }
 
+function ChartSection({ playerId, seasonAvg }: { playerId: number; seasonAvg: number | null }) {
+  const games = usePlayerGames(playerId);
+
+  if (games.isLoading) {
+    return <Skeleton className="h-60 w-full rounded-md" />;
+  }
+  // No chart when there's nothing to plot; the table tab still covers the data.
+  if (games.error || !games.data || games.data.length === 0) {
+    return null;
+  }
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="text-lg font-semibold">경기별 타율 추이</h2>
+      <RecentGamesChart games={games.data} seasonAvg={seasonAvg} />
+    </section>
+  );
+}
+
 function SeasonTable({ seasons }: { seasons: SeasonStats[] }) {
   return (
     <Table>
@@ -183,6 +202,8 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
     .filter((s) => s.group_name === "hitting")
     .sort((a, b) => b.season - a.season);
   const current = seasons[0];
+  const currentAvg = current ? Number(current.stats.avg) : NaN;
+  const seasonAvg = Number.isFinite(currentAvg) ? currentAvg : null;
 
   return (
     <div className="flex flex-col gap-8">
@@ -218,6 +239,8 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
       ) : (
         <p className="text-sm text-muted-foreground">시즌 기록이 없습니다.</p>
       )}
+
+      <ChartSection playerId={playerId} seasonAvg={seasonAvg} />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">기록</h2>
