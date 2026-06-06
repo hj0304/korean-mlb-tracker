@@ -1,0 +1,31 @@
+name: etl-season-stats
+
+# Keeps season_stats fresh: re-syncs each tracked player's season totals daily.
+# daily_games only refreshes per-game rows, so without this the season summary
+# (AVG/OPS, totals) drifts stale. Runs alongside etl-daily-games at KST noon.
+# GitHub Actions cron is UTC; 03:00 UTC == 12:00 KST.
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  season-stats:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --frozen
+      - name: Run season_stats
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ENVIRONMENT: production
+        run: uv run python -m app.jobs.run --job=season_stats
