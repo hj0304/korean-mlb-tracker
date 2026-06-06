@@ -30,8 +30,17 @@ async def _get(
 
 
 async def get_person(client: httpx.AsyncClient, player_id: int) -> dict[str, Any]:
-    """Fetch a player's biographical info: ``/people/{id}``."""
-    return await _get(client, f"people/{player_id}")
+    """Fetch a player's biographical info: ``/people/{id}``.
+
+    Hydrates ``currentTeam`` so the roster sync can derive the player's level
+    (MLB/AAA/AA/…) from the team's sport — the bare response omits it.
+    """
+    return await _get(client, f"people/{player_id}", {"hydrate": "currentTeam"})
+
+
+async def get_team(client: httpx.AsyncClient, team_id: int) -> dict[str, Any]:
+    """Fetch a team: ``/teams/{id}``. Carries ``sport.id`` (1=MLB, 11-14=MiLB)."""
+    return await _get(client, f"teams/{team_id}")
 
 
 async def get_season_stats(
