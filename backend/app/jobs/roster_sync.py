@@ -12,7 +12,7 @@ from typing import Any
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
-from app.core.config import KOREAN_PLAYERS
+from app.core.config import KOREAN_PLAYERS, SPORT_ID_TO_LEVEL
 from app.db.models import Player
 from app.db.session import get_session_maker
 from app.services import mlb_client
@@ -29,10 +29,6 @@ _UPDATE_COLS = (
     "throws",
     "birth_date",
 )
-
-# MLB Stats API sportId -> our level label (sportId map: see CLAUDE.md).
-# 16 = Rookie (complex leagues), where several tracked prospects currently play.
-_SPORT_ID_TO_LEVEL = {1: "MLB", 11: "AAA", 12: "AA", 13: "A+", 14: "A", 16: "R"}
 
 
 def build_player_row(
@@ -88,7 +84,7 @@ async def run() -> None:
                 for team_id in team_ids
             }
         team_level = {
-            team_id: _SPORT_ID_TO_LEVEL.get(task.result()["teams"][0]["sport"]["id"])
+            team_id: SPORT_ID_TO_LEVEL.get(task.result()["teams"][0]["sport"]["id"])
             for team_id, task in team_tasks.items()
         }
 

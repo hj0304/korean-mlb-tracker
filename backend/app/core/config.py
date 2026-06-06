@@ -26,6 +26,11 @@ KOREAN_PLAYERS: dict[int, str] = {
     836688: "문서준",
 }
 
+# MLB Stats API sportId -> our level label. 16 = Rookie (complex leagues), where
+# several tracked prospects currently play. Used to label both the roster and
+# each season-stats row.
+SPORT_ID_TO_LEVEL: dict[int, str] = {1: "MLB", 11: "AAA", 12: "AA", 13: "A+", 14: "A", 16: "R"}
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(

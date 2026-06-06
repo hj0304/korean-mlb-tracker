@@ -40,5 +40,7 @@ def test_build_player_row_milb_with_team() -> None:
 
 
 def test_sport_id_to_level_mapping() -> None:
-    assert roster_sync._SPORT_ID_TO_LEVEL[1] == "MLB"
-    assert roster_sync._SPORT_ID_TO_LEVEL[14] == "A"
+    from app.core.config import SPORT_ID_TO_LEVEL
+
+    assert SPORT_ID_TO_LEVEL[1] == "MLB"
+    assert SPORT_ID_TO_LEVEL[14] == "A"

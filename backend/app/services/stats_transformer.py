@@ -7,6 +7,8 @@ real responses saved under ``tests/fixtures/mlb_responses/``.
 
 from typing import Any
 
+from app.core.config import SPORT_ID_TO_LEVEL
+
 # MLB boxscores label a batter's line "batting"; our schema and the season-stats
 # endpoint both use "hitting". Normalize boxscore groups to ours.
 _BOXSCORE_GROUP_TO_OURS = {"batting": "hitting", "pitching": "pitching"}
@@ -36,34 +38,39 @@ def transform_season_stats(payload: dict[str, Any], player_id: int) -> list[dict
     return rows
 
 
-def transform_year_by_year(payload: dict[str, Any], player_id: int) -> list[dict[str, Any]]:
-    """yearByYear response -> ``season_stats`` rows, one per (season, group).
+def transform_year_by_year(payloads: list[dict[str, Any]], player_id: int) -> list[dict[str, Any]]:
+    """yearByYear responses -> ``season_stats`` rows, one per (season, group).
 
-    MLB only (``sportId`` 1). For a season split across teams the API adds a
-    combined ``numTeams`` split; we keep that so each season is a single row.
+    Takes one payload per level (see ``mlb_client.get_year_by_year``). A player
+    can appear at several levels in one season (promotion) and across multiple
+    teams within a level (the API adds a combined ``numTeams`` split). Both are
+    resolved by a single rule: keep the split with the most ``gamesPlayed`` —
+    that picks the combined total over its team components, and the primary
+    level over a brief cup-of-coffee at another. The chosen level (MLB/AAA/…) is
+    stored on the row's ``stats`` so the UI can label it.
     """
-    rows: list[dict[str, Any]] = []
-    for group in payload.get("stats", []):
-        group_name = group["group"]["displayName"]
-        by_season: dict[int, dict[str, Any]] = {}
-        for split in group.get("splits", []):
-            if split.get("sport", {}).get("id") != 1:
-                continue
-            season = int(split["season"])
-            if "numTeams" in split:
-                by_season[season] = split  # combined multi-team total wins
-            elif season not in by_season:
-                by_season[season] = split
-        for season, split in by_season.items():
-            rows.append(
-                {
-                    "player_id": player_id,
-                    "season": season,
-                    "group_name": group_name,
-                    "stats": split["stat"],
-                }
-            )
-    return rows
+    # (season, group_name) -> (games_played, stats)
+    best: dict[tuple[int, str], tuple[int, dict[str, Any]]] = {}
+    for payload in payloads:
+        for group in payload.get("stats", []):
+            group_name = group["group"]["displayName"]
+            for split in group.get("splits", []):
+                season = int(split["season"])
+                stat = split["stat"]
+                games = int(stat.get("gamesPlayed") or 0)
+                key = (season, group_name)
+                if key not in best or games > best[key][0]:
+                    level = SPORT_ID_TO_LEVEL.get(split.get("sport", {}).get("id"))
+                    best[key] = (games, {**stat, "level": level})
+    return [
+        {
+            "player_id": player_id,
+            "season": season,
+            "group_name": group_name,
+            "stats": stats,
+        }
+        for (season, group_name), (_, stats) in best.items()
+    ]
 
 
 def transform_game_log(

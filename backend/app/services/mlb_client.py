@@ -58,9 +58,17 @@ async def get_year_by_year(
     client: httpx.AsyncClient,
     player_id: int,
     groups: tuple[str, ...] = ("hitting", "pitching"),
+    sport_id: int | None = None,
 ) -> dict[str, Any]:
-    """Fetch per-season totals for every season: ``/people/{id}/stats?stats=yearByYear``."""
-    params = {"stats": "yearByYear", "group": ",".join(groups)}
+    """Fetch per-season totals for every season: ``/people/{id}/stats?stats=yearByYear``.
+
+    Without ``sport_id`` the API returns MLB seasons only; pass a MiLB sportId
+    (11-14, 16) to get that level's seasons. A player who changed levels needs
+    one call per level (the endpoint rejects a comma-joined list).
+    """
+    params: dict[str, Any] = {"stats": "yearByYear", "group": ",".join(groups)}
+    if sport_id is not None:
+        params["sportId"] = sport_id
     return await _get(client, f"people/{player_id}/stats", params)
 
 

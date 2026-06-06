@@ -37,7 +37,8 @@
       "babip": ".241",
       "groundOutsToAirouts": "0.81",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "33.38"
+      "atBatsPerHomeRun": "33.38",
+      "level": "MLB"
     }
   },
   {
@@ -78,7 +79,8 @@
       "babip": ".290",
       "groundOutsToAirouts": "0.80",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "47.00"
+      "atBatsPerHomeRun": "47.00",
+      "level": "MLB"
     }
   },
   {
@@ -119,7 +121,8 @@
       "babip": ".306",
       "groundOutsToAirouts": "0.84",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "31.65"
+      "atBatsPerHomeRun": "31.65",
+      "level": "MLB"
     }
   },
   {
@@ -160,7 +163,8 @@
       "babip": ".261",
       "groundOutsToAirouts": "0.74",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "36.64"
+      "atBatsPerHomeRun": "36.64",
+      "level": "MLB"
     }
   },
   {
@@ -201,7 +205,8 @@
       "babip": ".271",
       "groundOutsToAirouts": "0.65",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "34.20"
+      "atBatsPerHomeRun": "34.20",
+      "level": "MLB"
     }
   },
   {
@@ -242,7 +247,8 @@
       "babip": ".129",
       "groundOutsToAirouts": "1.25",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
+      "atBatsPerHomeRun": "-.--",
+      "level": "MLB"
     }
   }
 ]

@@ -53,6 +53,12 @@ def test_get_year_by_year_params() -> None:
     params = dict(req.url.params)
     assert params["stats"] == "yearByYear"
     assert params["group"] == "hitting,pitching"
+    assert "sportId" not in params  # MLB by default
+
+
+def test_get_year_by_year_sport_id() -> None:
+    req, _ = _call(mlb_client.get_year_by_year, 805870, sport_id=14)
+    assert dict(req.url.params)["sportId"] == "14"
 
 
 def test_get_schedule_params() -> None:

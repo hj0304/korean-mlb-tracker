@@ -3,6 +3,10 @@
 Reads the roster from the ``players`` table, fetches every season (yearByYear)
 from the MLB Stats API in parallel, transforms them, and upserts one row per
 (season, stat group).
+
+yearByYear is queried once per level (MLB + MiLB), because a tracked player may
+have seasons at several levels (a prospect climbing, or an MLB player optioned
+to AAA). The transformer merges those per-level responses per season.
 """
 
 import asyncio
@@ -11,10 +15,13 @@ from typing import Any
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
+from app.core.config import SPORT_ID_TO_LEVEL
 from app.db.models import Player, SeasonStats
 from app.db.session import get_session_maker
 from app.services import mlb_client
 from app.services.stats_transformer import transform_year_by_year
+
+_SPORT_IDS = tuple(SPORT_ID_TO_LEVEL)  # (1, 11, 12, 13, 14, 16)
 
 
 async def run() -> None:
@@ -26,13 +33,18 @@ async def run() -> None:
 
     async with mlb_client.make_client() as client:
         async with asyncio.TaskGroup() as tg:
-            tasks: dict[int, asyncio.Task[dict[str, Any]]] = {
-                pid: tg.create_task(mlb_client.get_year_by_year(client, pid)) for pid in player_ids
+            tasks: dict[tuple[int, int], asyncio.Task[dict[str, Any]]] = {
+                (pid, sport_id): tg.create_task(
+                    mlb_client.get_year_by_year(client, pid, sport_id=sport_id)
+                )
+                for pid in player_ids
+                for sport_id in _SPORT_IDS
             }
 
     rows: list[dict[str, Any]] = []
     for pid in player_ids:
-        rows.extend(transform_year_by_year(tasks[pid].result(), pid))
+        payloads = [tasks[(pid, sport_id)].result() for sport_id in _SPORT_IDS]
+        rows.extend(transform_year_by_year(payloads, pid))
 
     if not rows:
         print("season_stats: no stats to upsert")
