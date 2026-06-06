@@ -14,7 +14,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SeasonStats } from "@/lib/api";
 import { usePlayer, usePlayerGames } from "@/lib/queries";
-import { cn } from "@/lib/utils";
 
 // JSONB stats are free-form; pull a value as display text. Every tracked player
 // is currently a batter, so we render hitting stats (pitching split comes in S2-08).
@@ -23,22 +22,31 @@ function stat(stats: { [key: string]: unknown }, key: string): string {
   return value === null || value === undefined ? "-" : String(value);
 }
 
-// Headline stats shown big at the top (the "at a glance" grid).
+// The triple-slash line shown big and accented at the top of the summary.
+const SLASH_LINE: [string, string][] = [
+  ["avg", "AVG"],
+  ["obp", "OBP"],
+  ["slg", "SLG"],
+  ["ops", "OPS"],
+];
+
+// Counting stats shown in the grid below the slash line ("at a glance").
 const SEASON_SUMMARY: [string, string][] = [
-  ["avg", "타율"],
   ["homeRuns", "홈런"],
   ["hits", "안타"],
   ["rbi", "타점"],
   ["runs", "득점"],
   ["stolenBases", "도루"],
-  ["obp", "출루율"],
-  ["ops", "OPS"],
+  ["plateAppearances", "타석"],
+  ["baseOnBalls", "볼넷"],
+  ["strikeOuts", "삼진"],
 ];
 
 // Full season line for the 통산기록 table (one row per season).
 const SEASON_TABLE: [string, string][] = [
   ["avg", "타율"],
   ["gamesPlayed", "경기"],
+  ["plateAppearances", "타석"],
   ["atBats", "타수"],
   ["hits", "안타"],
   ["doubles", "2루타"],
@@ -50,6 +58,7 @@ const SEASON_TABLE: [string, string][] = [
   ["baseOnBalls", "볼넷"],
   ["strikeOuts", "삼진"],
   ["obp", "출루율"],
+  ["slg", "장타율"],
   ["ops", "OPS"],
 ];
 
@@ -78,6 +87,7 @@ function DetailSkeleton() {
         <Skeleton className="h-4 w-28" />
         <Skeleton className="h-4 w-56" />
       </div>
+      <Skeleton className="h-[88px] w-full rounded-md" />
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {Array.from({ length: 8 }).map((_, i) => (
           <Skeleton key={i} className="h-20 w-full rounded-md" />
@@ -221,17 +231,23 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
       {current ? (
         <section className="flex flex-col gap-3">
           <h2 className="text-lg font-semibold">{current.season} 시즌</h2>
+          <div className="grid grid-cols-4 gap-2 rounded-md border border-t-2 border-t-primary bg-muted/30 p-4">
+            {SLASH_LINE.map(([key, label]) => (
+              <div key={key} className="text-center">
+                <div className="text-xs font-medium text-muted-foreground">{label}</div>
+                <div className="mt-1 text-2xl font-bold tabular-nums text-primary">
+                  {stat(current.stats, key)}
+                </div>
+              </div>
+            ))}
+          </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {SEASON_SUMMARY.map(([key, label], i) => (
-              <div
-                key={key}
-                className={cn(
-                  "rounded-md border p-4 text-center",
-                  i === 0 && "border-t-2 border-t-primary",
-                )}
-              >
+            {SEASON_SUMMARY.map(([key, label]) => (
+              <div key={key} className="rounded-md border p-4 text-center">
                 <div className="text-xs text-muted-foreground">{label}</div>
-                <div className="mt-1 text-2xl font-bold">{stat(current.stats, key)}</div>
+                <div className="mt-1 text-2xl font-bold tabular-nums">
+                  {stat(current.stats, key)}
+                </div>
               </div>
             ))}
           </div>
