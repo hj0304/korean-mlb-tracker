@@ -48,7 +48,12 @@ export function RecentGamesChart({
           width={44}
           fontSize={12}
         />
-        <Tooltip />
+        <Tooltip
+          formatter={(value) => [
+            typeof value === "number" ? value.toFixed(3) : value,
+            "경기 타율",
+          ]}
+        />
         {seasonAvg !== null ? (
           <ReferenceLine
             y={seasonAvg}
