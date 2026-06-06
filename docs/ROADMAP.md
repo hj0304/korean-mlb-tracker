@@ -66,7 +66,7 @@
 
 #### 운영
 - [x] **S1-18** GitHub Actions cron: `daily_games` 매일 KST 12시 실행
-- [ ] **S1-19** README에 첫 스크린샷 추가, "How to run locally" 섹션
+- [x] **S1-19** README에 첫 스크린샷 추가, "How to run locally" 섹션
 - [ ] **S1-20** 본인 도그푸딩: 3일 연속 사용 후 발견된 문제 이슈로 정리
 
 **산출물**: 작동하는 사이트. 김혜성 카드 클릭 → 어제 경기와 시즌 스탯이 뜸. 첫 데모.
