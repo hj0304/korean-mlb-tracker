@@ -6,12 +6,24 @@ from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Korean players we track, MLB player ID -> Korean name. MLB data has no Korean
-# names, so they are mapped here by hand. MiLB prospects are added in S2-01.
+# names, so they are mapped here by hand.
 KOREAN_PLAYERS: dict[int, str] = {
+    # MLB
     808975: "김혜성",
     808982: "이정후",
     673490: "김하성",
     823550: "송성문",
+    # MiLB prospects (S2-01)
+    678225: "배지환",
+    800231: "조원빈",
+    805870: "엄형찬",
+    807149: "심준석",
+    815794: "장현석",
+    808970: "고우석",
+    806739: "제이든 김",
+    829748: "이현승",
+    834605: "김성준",
+    836688: "문서준",
 }
 
 

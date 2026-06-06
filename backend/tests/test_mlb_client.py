@@ -29,7 +29,13 @@ def _call(
 def test_get_person_path() -> None:
     req, data = _call(mlb_client.get_person, 808982)
     assert req.url.path == "/api/v1/people/808982"
+    assert dict(req.url.params)["hydrate"] == "currentTeam"
     assert data == {"ok": True}
+
+
+def test_get_team_path() -> None:
+    req, _ = _call(mlb_client.get_team, 3705)
+    assert req.url.path == "/api/v1/teams/3705"
 
 
 def test_get_season_stats_params() -> None:
