@@ -4,7 +4,7 @@ import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import players
+from app.api.v1 import dashboard, players
 
 # Initialize Sentry before the app is created so startup errors are captured.
 # DSN is read from the environment, not Settings, so importing the app in CI
@@ -30,6 +30,7 @@ app.add_middleware(
 )
 
 app.include_router(players.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/health")

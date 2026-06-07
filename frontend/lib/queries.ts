@@ -3,7 +3,14 @@
 
 import { useQuery } from "@tanstack/react-query"
 
-import { apiFetch, type GameLog, type Player, type PlayerDetail } from "./api"
+import { apiFetch, type Dashboard, type GameLog, type Player, type PlayerDetail } from "./api"
+
+export function useDashboard() {
+  return useQuery({
+    queryKey: ["dashboard", "today"],
+    queryFn: () => apiFetch<Dashboard>("/api/v1/dashboard/today"),
+  })
+}
 
 export function usePlayers() {
   return useQuery({

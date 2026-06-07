@@ -11,18 +11,47 @@
           "players"
         ],
         "summary": "List Players",
+        "description": "List tracked players, optionally filtered by ``level`` (MLB/AAA/AA/A+/A/R).",
         "operationId": "list_players_api_v1_players_get",
+        "parameters": [
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Level"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/PlayerOut"
                   },
-                  "type": "array",
                   "title": "Response List Players Api V1 Players Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -135,6 +164,27 @@
         }
       }
     },
+    "/api/v1/dashboard/today": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Dashboard Today",
+        "operationId": "dashboard_today_api_v1_dashboard_today_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -160,6 +210,112 @@
   },
   "components": {
     "schemas": {
+      "DashboardGameOut": {
+        "properties": {
+          "player_id": {
+            "type": "integer",
+            "title": "Player Id"
+          },
+          "full_name_ko": {
+            "type": "string",
+            "title": "Full Name Ko"
+          },
+          "full_name_en": {
+            "type": "string",
+            "title": "Full Name En"
+          },
+          "current_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Level"
+          },
+          "player_type": {
+            "type": "string",
+            "title": "Player Type"
+          },
+          "opponent_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Id"
+          },
+          "is_home": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Home"
+          },
+          "group_name": {
+            "type": "string",
+            "title": "Group Name"
+          },
+          "stats": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Stats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "player_id",
+          "full_name_ko",
+          "full_name_en",
+          "current_level",
+          "player_type",
+          "opponent_id",
+          "is_home",
+          "group_name",
+          "stats"
+        ],
+        "title": "DashboardGameOut",
+        "description": "One tracked player's line in the latest game day's feed (player + game)."
+      },
+      "DashboardOut": {
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "games": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardGameOut"
+            },
+            "type": "array",
+            "title": "Games"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "games"
+        ],
+        "title": "DashboardOut",
+        "description": "Latest game day plus every tracked player who appeared that day.\n\n``date`` is null when there are no game logs at all."
+      },
       "GameLogOut": {
         "properties": {
           "game_id": {
