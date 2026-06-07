@@ -84,7 +84,7 @@
 - [ ] **S2-02** `players.current_level` 활용한 필터 API: `GET /api/v1/players?level=MLB|AAA|AA`
 - [ ] **S2-03** `GET /api/v1/dashboard/today`: 메인 대시보드 집계 (오늘자 경기 결과 포함)
 - [ ] **S2-04** 최근 N경기 조회 최적화 (인덱스 점검)
-- [ ] **S2-05** 슬로우 API 식별 → 캐싱 추가 (functools.lru_cache 또는 cache decorator)
+- [x] **S2-05** 슬로우 API 식별 → 캐싱 추가 — 읽기 전용 엔드포인트에 인프로세스 TTL 캐시(5분) + Cache-Control. 데이터는 일 1회 ETL 갱신이라 안전. (근본 지연은 백엔드 리전 US Central ↔ Supabase Seoul 거리 — 별도)
 
 #### 프론트엔드
 - [ ] **S2-06** 탭/필터: "MLB | AAA | AA"
