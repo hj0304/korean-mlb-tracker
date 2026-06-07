@@ -9,6 +9,8 @@ export type Player = components["schemas"]["PlayerOut"]
 export type PlayerDetail = components["schemas"]["PlayerDetailOut"]
 export type GameLog = components["schemas"]["GameLogOut"]
 export type SeasonStats = components["schemas"]["SeasonStatsOut"]
+export type Dashboard = components["schemas"]["DashboardOut"]
+export type DashboardGame = components["schemas"]["DashboardGameOut"]
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"
 

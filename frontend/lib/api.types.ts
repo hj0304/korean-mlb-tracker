@@ -11,7 +11,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Players */
+        /**
+         * List Players
+         * @description List tracked players, optionally filtered by ``level`` (MLB/AAA/AA/A+/A/R).
+         */
         get: operations["list_players_api_v1_players_get"];
         put?: never;
         post?: never;
@@ -55,6 +58,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dashboard/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard Today */
+        get: operations["dashboard_today_api_v1_dashboard_today_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -76,6 +96,44 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * DashboardGameOut
+         * @description One tracked player's line in the latest game day's feed (player + game).
+         */
+        DashboardGameOut: {
+            /** Player Id */
+            player_id: number;
+            /** Full Name Ko */
+            full_name_ko: string;
+            /** Full Name En */
+            full_name_en: string;
+            /** Current Level */
+            current_level: string | null;
+            /** Player Type */
+            player_type: string;
+            /** Opponent Id */
+            opponent_id: number | null;
+            /** Is Home */
+            is_home: boolean | null;
+            /** Group Name */
+            group_name: string;
+            /** Stats */
+            stats: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * DashboardOut
+         * @description Latest game day plus every tracked player who appeared that day.
+         *
+         *     ``date`` is null when there are no game logs at all.
+         */
+        DashboardOut: {
+            /** Date */
+            date: string | null;
+            /** Games */
+            games: components["schemas"]["DashboardGameOut"][];
+        };
         /** GameLogOut */
         GameLogOut: {
             /** Game Id */
@@ -188,7 +246,9 @@ export type $defs = Record<string, never>;
 export interface operations {
     list_players_api_v1_players_get: {
         parameters: {
-            query?: never;
+            query?: {
+                level?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -202,6 +262,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlayerOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -266,6 +335,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dashboard_today_api_v1_dashboard_today_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardOut"];
                 };
             };
         };

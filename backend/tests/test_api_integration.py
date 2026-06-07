@@ -46,3 +46,15 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     # missing player
     r = await seeded_client.get("/api/v1/players/999999")
     assert r.status_code == 404
+
+    # dashboard: latest game day's feed (S2-03)
+    r = await seeded_client.get("/api/v1/dashboard/today")
+    assert r.status_code == 200
+    dash = r.json()
+    assert dash["date"] == "2026-05-10"  # newest of the two seeded games
+    assert len(dash["games"]) == 1
+    g = dash["games"][0]
+    assert g["player_id"] == 808975
+    assert g["full_name_ko"] == "김혜성"
+    assert g["current_level"] == "MLB"
+    assert g["stats"]["hits"] == 1
