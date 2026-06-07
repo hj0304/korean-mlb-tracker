@@ -12,23 +12,34 @@ from typing import Any
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
+from app.core.config import SPORT_ID_TO_LEVEL
 from app.db.models import GameLog, Player
 from app.db.session import get_session_maker
 from app.services import mlb_client
 from app.services.stats_transformer import transform_game_log
 
 
-def extract_completed_games(schedule: dict[str, Any]) -> list[tuple[int, str]]:
-    """Schedule response -> ``(game_pk, official_date)`` for each completed game.
+def extract_completed_games(
+    schedule: dict[str, Any],
+) -> list[tuple[int, str, frozenset[int]]]:
+    """Schedule response -> ``(game_pk, official_date, team_ids)`` per completed game.
 
+    ``team_ids`` are the home+away team ids, used by the caller to keep only
+    games a tracked player's team played in (MiLB has hundreds of games a day).
     Skips anything not ``Final`` (live, scheduled, postponed).
     """
-    games: list[tuple[int, str]] = []
+    games: list[tuple[int, str, frozenset[int]]] = []
     for day in schedule.get("dates", []):
         for game in day.get("games", []):
             if game["status"]["abstractGameState"] != "Final":
                 continue
-            games.append((game["gamePk"], game["officialDate"]))
+            teams = game.get("teams", {})
+            team_ids = frozenset(
+                teams[side]["team"]["id"]
+                for side in ("home", "away")
+                if (teams.get(side) or {}).get("team", {}).get("id") is not None
+            )
+            games.append((game["gamePk"], game["officialDate"], team_ids))
     return games
 
 
@@ -39,14 +50,30 @@ async def run(game_date: date | None = None) -> None:
     session_maker = get_session_maker()
 
     async with session_maker() as session:
-        result = await session.execute(select(Player.id))
-        player_ids = [pid for (pid,) in result.all()]
+        result = await session.execute(select(Player.id, Player.current_team_id))
+        roster = result.all()
+    player_ids = [pid for pid, _ in roster]
+    team_ids = {tid for _, tid in roster if tid is not None}
+    if not team_ids:
+        print("daily_games: roster has no current teams; run roster_sync first")
+        return
 
     async with mlb_client.make_client() as client:
-        schedule = await mlb_client.get_schedule(client, date_str)
-        games = extract_completed_games(schedule)
+        # MLB + every MiLB level, since tracked players span all of them.
+        async with asyncio.TaskGroup() as tg:
+            schedule_tasks = [
+                tg.create_task(mlb_client.get_schedule(client, date_str, sport_id=sport_id))
+                for sport_id in SPORT_ID_TO_LEVEL
+            ]
+        # Keep only completed games one of our teams played in.
+        games = [
+            (game_pk, official_date)
+            for task in schedule_tasks
+            for game_pk, official_date, game_team_ids in extract_completed_games(task.result())
+            if game_team_ids & team_ids
+        ]
         if not games:
-            print(f"daily_games: no completed games on {date_str}")
+            print(f"daily_games: no completed games for tracked teams on {date_str}")
             return
         async with asyncio.TaskGroup() as tg:
             boxscores = {
