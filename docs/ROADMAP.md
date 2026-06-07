@@ -83,7 +83,7 @@
 - [x] **S2-01** MiLB 데이터: sportId 11/12/13/14 호출 추가. MiLB 한국인 선수 명단 수동 시드 (예: 5~10명) — 3분할(a 로스터+레벨 / b 시즌스탯 / c 일일경기)로 진행, 루키(16) 포함
 - [x] **S2-02** `players.current_level` 활용한 필터 API: `GET /api/v1/players?level=MLB|AAA|AA` — 레벨별 캐시 키 분리. 지원 레벨 MLB/AAA/AA/A+/A/R
 - [ ] **S2-03** `GET /api/v1/dashboard/today`: 메인 대시보드 집계 (오늘자 경기 결과 포함)
-- [ ] **S2-04** 최근 N경기 조회 최적화 (인덱스 점검)
+- [x] **S2-04** 최근 N경기 조회 최적화 (인덱스 점검) — EXPLAIN ANALYZE로 검증: 기존 인덱스(`idx_game_logs_player_date`, PK)가 다 커버, 추가 불필요. TECH_SPEC에 기록
 - [x] **S2-05** 슬로우 API 식별 → 캐싱 추가 — 읽기 전용 엔드포인트에 인프로세스 TTL 캐시(5분) + Cache-Control. 데이터는 일 1회 ETL 갱신이라 안전. (근본 지연은 백엔드 리전 US Central ↔ Supabase Seoul 거리 — 별도)
 
 #### 프론트엔드
