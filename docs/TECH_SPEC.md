@@ -146,6 +146,13 @@ CREATE TABLE etl_runs (
 
 **왜 JSONB?** MLB API의 스탯 필드가 50개 이상이고 자주 추가됨. 모든 컬럼을 정규화하면 마이그레이션 부담. 대신 자주 조회하는 핵심 스탯은 generated column으로 뽑아낼 수 있음 (예: `(stats->>'avg')::numeric`).
 
+**인덱스 점검 (S2-04).** 실제 쿼리를 `EXPLAIN ANALYZE`로 확인한 결과 기존 인덱스가 모든 접근 패턴을 커버하므로 **추가 인덱스 불필요**:
+- 최근 경기 (`WHERE player_id=? ORDER BY game_date DESC`) → `idx_game_logs_player_date (player_id, game_date DESC)` 사용 (Bitmap Index Scan, ~2ms).
+- 시즌 스탯 (`WHERE player_id=? ORDER BY season DESC, group_name`) → `season_stats_pkey (player_id, season, group_name)` 역방향 스캔 사용 (~4ms).
+- 선수 목록 레벨 필터 → 14행짜리 테이블이라 seq scan이 더 빠름(인덱스 무의미).
+
+체감 지연의 원인은 쿼리가 아니라 백엔드↔DB 리전 거리였고, 캐싱(S2-05)으로 해소됨.
+
 ## 4. API 계약 (Backend)
 
 베이스: `https://api.korean-mlb.example.com/api/v1`
