@@ -16,6 +16,7 @@
 | [05](05-pitcher-stats-not-rendered.md) | 투수 성적이 안 보임 | 상세 페이지가 타격 스탯만 하드코딩 | 프론트 |
 | [06](06-milb-data-collection.md) | MiLB 데이터 수집의 함정 | yearByYear 기본=MLB만, 레벨별 개별 호출·시즌 병합 필요 | 데이터/API |
 | [07](07-windows-asyncpg-ssl.md) | 로컬 통합 테스트만 실패 | 한글 사용자명 경로 → asyncpg가 SSL 인증서 로드 실패 | 환경/Windows |
+| [08](08-deployed-site-calls-localhost.md) | 배포 사이트가 `localhost:8000` 호출 | Vercel에 `NEXT_PUBLIC_API_BASE_URL` 미설정(빌드타임 env) | 배포/프론트 |
 
 ## 형식
 
