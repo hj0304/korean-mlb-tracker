@@ -14,9 +14,16 @@ def _load(name: str) -> Any:
 def test_extract_completed_games() -> None:
     schedule = _load("schedule_2026-04-06.json")
     games = daily_games.extract_completed_games(schedule)
-    assert (822832, "2026-04-06") in games
     assert len(games) == 13
-    assert all(isinstance(pk, int) and isinstance(d, str) for pk, d in games)
+    assert (822832, "2026-04-06") in {(pk, d) for pk, d, _ in games}
+    assert all(isinstance(pk, int) and isinstance(d, str) for pk, d, _ in games)
+
+
+def test_extract_completed_games_captures_team_ids() -> None:
+    schedule = _load("schedule_2026-04-06.json")
+    by_pk = {pk: team_ids for pk, _, team_ids in daily_games.extract_completed_games(schedule)}
+    # home Rays (139) vs away (112) — used to filter to tracked teams
+    assert by_pk[823002] == frozenset({139, 112})
 
 
 def test_extract_completed_games_skips_unfinished() -> None:
@@ -28,6 +35,10 @@ def test_extract_completed_games_skips_unfinished() -> None:
                         "gamePk": 1,
                         "officialDate": "2026-04-06",
                         "status": {"abstractGameState": "Final"},
+                        "teams": {
+                            "home": {"team": {"id": 10}},
+                            "away": {"team": {"id": 20}},
+                        },
                     },
                     {
                         "gamePk": 2,
@@ -43,4 +54,4 @@ def test_extract_completed_games_skips_unfinished() -> None:
             }
         ]
     }
-    assert daily_games.extract_completed_games(schedule) == [(1, "2026-04-06")]
+    assert daily_games.extract_completed_games(schedule) == [(1, "2026-04-06", frozenset({10, 20}))]
