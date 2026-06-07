@@ -89,6 +89,18 @@ def test_list_players() -> None:
     assert "season_stats" not in body[0]
 
 
+def test_list_players_accepts_level_param() -> None:
+    # The stub ignores the WHERE clause (real filtering is covered by the
+    # integration test); this just verifies the param is wired and routed.
+    _use(_FakeSession(execute_items=[_player()]))
+    try:
+        r = TestClient(app).get("/api/v1/players?level=MLB")
+    finally:
+        app.dependency_overrides.clear()
+    assert r.status_code == 200
+    assert r.json()[0]["id"] == 808975
+
+
 def test_get_player_detail() -> None:
     stats = SeasonStats(
         player_id=808975,

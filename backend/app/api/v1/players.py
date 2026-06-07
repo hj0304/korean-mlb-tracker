@@ -29,8 +29,11 @@ _player_cache: TTLCache[PlayerDetailOut] = TTLCache(_TTL_SECONDS)
 _games_cache: TTLCache[list[GameLogOut]] = TTLCache(_TTL_SECONDS)
 
 
-async def _build_players(session: AsyncSession) -> list[PlayerOut]:
-    result = await session.execute(select(Player).order_by(Player.full_name_en))
+async def _build_players(session: AsyncSession, level: str | None) -> list[PlayerOut]:
+    stmt = select(Player).order_by(Player.full_name_en)
+    if level is not None:
+        stmt = stmt.where(Player.current_level == level)
+    result = await session.execute(stmt)
     return [PlayerOut.model_validate(p) for p in result.scalars().all()]
 
 
@@ -65,10 +68,13 @@ async def _build_games(
 
 @router.get("/players", response_model=list[PlayerOut])
 async def list_players(
-    response: Response, session: AsyncSession = Depends(get_session)
+    response: Response,
+    level: str | None = None,
+    session: AsyncSession = Depends(get_session),
 ) -> Sequence[PlayerOut]:
+    """List tracked players, optionally filtered by ``level`` (MLB/AAA/AA/A+/A/R)."""
     response.headers["Cache-Control"] = _CACHE_CONTROL
-    return await _players_cache.get_or_set("all", lambda: _build_players(session))
+    return await _players_cache.get_or_set(level or "all", lambda: _build_players(session, level))
 
 
 @router.get("/players/{player_id}", response_model=PlayerDetailOut)
