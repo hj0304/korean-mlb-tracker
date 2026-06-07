@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 
+import { SearchX } from "lucide-react";
+
+import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { PlayerCard } from "@/components/PlayerCard";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -61,7 +64,7 @@ export function PlayerList() {
       </Tabs>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-muted-foreground">해당 레벨의 선수가 없습니다.</p>
+        <EmptyState message="해당 레벨의 선수가 없습니다." icon={SearchX} />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((player) => (
