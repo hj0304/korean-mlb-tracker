@@ -11,7 +11,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60_000, // our data comes from a daily ETL; 1 min is plenty fresh
+            staleTime: 300_000, // daily ETL data; 5 min matches the backend cache TTL
             retry: 1,
           },
         },
