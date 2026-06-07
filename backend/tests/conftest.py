@@ -14,9 +14,23 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.pool import NullPool
 
 from app.api.deps import get_session
+from app.api.v1 import players as players_api
 from app.db.base import Base
 from app.db.models import GameLog, Player, SeasonStats
 from app.main import app
+
+
+@pytest.fixture(autouse=True)
+def _clear_api_caches() -> Generator[None, None, None]:
+    # The players API holds module-level TTL caches; clear them around every test
+    # so cached responses don't leak between tests with different stub/DB data.
+    for cache in (
+        players_api._players_cache,
+        players_api._player_cache,
+        players_api._games_cache,
+    ):
+        cache.clear()
+    yield
 
 
 @pytest.fixture(scope="session")
