@@ -12,6 +12,14 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     assert r.status_code == 200
     assert any(p["id"] == 808975 for p in r.json())
 
+    # list filtered by level (S2-02)
+    r = await seeded_client.get("/api/v1/players?level=MLB")
+    assert r.status_code == 200
+    assert [p["id"] for p in r.json()] == [808975]
+    r = await seeded_client.get("/api/v1/players?level=AAA")
+    assert r.status_code == 200
+    assert r.json() == []
+
     # detail: bio + season totals
     r = await seeded_client.get("/api/v1/players/808975")
     assert r.status_code == 200
