@@ -87,7 +87,7 @@
 - [x] **S2-05** 슬로우 API 식별 → 캐싱 추가 — 읽기 전용 엔드포인트에 인프로세스 TTL 캐시(5분) + Cache-Control. 데이터는 일 1회 ETL 갱신이라 안전. (근본 지연은 백엔드 리전 US Central ↔ Supabase Seoul 거리 — 별도)
 
 #### 프론트엔드
-- [ ] **S2-06** 탭/필터: "MLB | AAA | AA"
+- [x] **S2-06** 탭/필터: 전체 + 존재하는 모든 레벨(MLB/AAA/AA/A+/A/루키), 선수 수 표시. 14명이라 클라이언트 필터(즉시 전환)
 - [ ] **S2-07** `RecentGamesChart.tsx`: Recharts로 최근 10경기 OPS/ERA 추이
 - [x] **S2-08** 타자/투수 카드 디자인 분리 (조건부 렌더) — 상세 페이지를 player_type별 config로 분기(투수: ERA/WHIP/K9/이닝/승패세홀 등). 목록 카드는 스탯 미표시라 분기 불필요
 - [ ] **S2-09** 다크 모드 토글 (next-themes)
