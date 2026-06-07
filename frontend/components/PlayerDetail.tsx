@@ -1,5 +1,8 @@
 "use client";
 
+import { CalendarOff, Inbox } from "lucide-react";
+
+import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { RecentGamesChart } from "@/components/RecentGamesChart";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -181,7 +184,7 @@ function GamesTable({
   }
   const rows = games.data?.filter((g) => g.group_name === group) ?? [];
   if (rows.length === 0) {
-    return <p className="text-sm text-muted-foreground">최근 경기 기록이 없습니다.</p>;
+    return <EmptyState message="최근 경기 기록이 없습니다." icon={CalendarOff} />;
   }
 
   return (
@@ -340,7 +343,7 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
           </div>
         </section>
       ) : (
-        <p className="text-sm text-muted-foreground">시즌 기록이 없습니다.</p>
+        <EmptyState message="시즌 기록이 없습니다." icon={Inbox} />
       )}
 
       {cfg.chart ? (
@@ -358,7 +361,7 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
             {seasons.length > 0 ? (
               <SeasonTable seasons={seasons} cols={cfg.seasonTable} />
             ) : (
-              <p className="text-sm text-muted-foreground">시즌 기록이 없습니다.</p>
+              <EmptyState message="시즌 기록이 없습니다." icon={Inbox} />
             )}
           </TabsContent>
           <TabsContent value="games">
