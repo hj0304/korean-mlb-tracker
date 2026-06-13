@@ -50,7 +50,20 @@ export function Dashboard() {
   const { data, isLoading, error, refetch } = useDashboard();
 
   if (isLoading) {
-    return <Skeleton className="h-40 w-full rounded-xl" />;
+    // Mirror the loaded layout (heading + bordered feed) so the dashboard
+    // doesn't grow and push the player list down when data arrives (CLS).
+    return (
+      <section className="flex flex-col gap-3">
+        <Skeleton className="h-7 w-28 rounded-md" />
+        <div className="divide-y rounded-md border">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="px-4 py-2.5">
+              <Skeleton className="h-5 w-full rounded-md" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
   }
   if (error) {
     return (
