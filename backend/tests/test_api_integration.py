@@ -58,3 +58,34 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     assert g["full_name_ko"] == "김혜성"
     assert g["current_level"] == "MLB"
     assert g["stats"]["hits"] == 1
+
+
+async def test_endpoints_empty_db(empty_client: AsyncClient) -> None:
+    # Every read endpoint must degrade gracefully when there's no data.
+    r = await empty_client.get("/api/v1/players")
+    assert r.status_code == 200
+    assert r.json() == []
+
+    r = await empty_client.get("/api/v1/players/808975")
+    assert r.status_code == 404
+
+    r = await empty_client.get("/api/v1/players/808975/games")
+    assert r.status_code == 200
+    assert r.json() == []
+
+    r = await empty_client.get("/api/v1/dashboard/today")
+    assert r.status_code == 200
+    assert r.json() == {"date": None, "games": []}
+
+
+async def test_read_endpoints_set_cache_control(seeded_client: AsyncClient) -> None:
+    # All read endpoints serve from a TTL cache and advertise it (S2-05).
+    for path in (
+        "/api/v1/players",
+        "/api/v1/players/808975",
+        "/api/v1/players/808975/games",
+        "/api/v1/dashboard/today",
+    ):
+        r = await seeded_client.get(path)
+        assert r.status_code == 200
+        assert r.headers["cache-control"] == "public, max-age=300"
