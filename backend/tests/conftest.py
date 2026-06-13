@@ -59,8 +59,14 @@ def pg_url() -> Generator[str, None, None]:
 async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
     # NullPool: each connection is opened/closed per use, so nothing is shared
     # across event loops between fixture setup and request handling.
-    engine = create_async_engine(pg_url, poolclass=NullPool)
+    # ssl=False: the testcontainer is plaintext localhost, and it stops asyncpg
+    # from probing ~/.postgresql/*.crt — which crashes on non-ASCII home paths
+    # (see docs/troubleshooting/07-windows-asyncpg-ssl.md).
+    engine = create_async_engine(pg_url, poolclass=NullPool, connect_args={"ssl": False})
+    # The container is session-scoped, so drop first: each test starts from a
+    # clean schema and seed rows don't leak across tests (e.g. into empty_client).
     async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
@@ -112,6 +118,34 @@ async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
             )
         )
         await session.commit()
+
+    async def _override() -> AsyncGenerator[AsyncSession, None]:
+        async with maker() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = _override
+    transport = ASGITransport(app=app)
+    try:
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            yield client
+    finally:
+        app.dependency_overrides.clear()
+        await engine.dispose()
+
+
+@pytest.fixture
+async def empty_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
+    # Same harness as seeded_client but with no rows, to exercise the empty-DB
+    # path of every read endpoint (S2-13).
+    # ssl=False: the testcontainer is plaintext localhost, and it stops asyncpg
+    # from probing ~/.postgresql/*.crt — which crashes on non-ASCII home paths
+    # (see docs/troubleshooting/07-windows-asyncpg-ssl.md).
+    engine = create_async_engine(pg_url, poolclass=NullPool, connect_args={"ssl": False})
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+    maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
     async def _override() -> AsyncGenerator[AsyncSession, None]:
         async with maker() as session:
