@@ -1,10 +1,10 @@
 "use client";
 
 import { CalendarOff, Inbox } from "lucide-react";
+import dynamic from "next/dynamic";
 
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
-import { RecentGamesChart } from "@/components/RecentGamesChart";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -17,6 +17,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SeasonStats } from "@/lib/api";
 import { usePlayer, usePlayerGames } from "@/lib/queries";
+
+// Recharts is heavy; keep it out of the initial bundle and load it only on the
+// detail page when the chart actually renders (ssr:false — it's client-only).
+const RecentGamesChart = dynamic(
+  () => import("@/components/RecentGamesChart").then((m) => m.RecentGamesChart),
+  { ssr: false, loading: () => <Skeleton className="h-60 w-full rounded-md" /> },
+);
 
 // JSONB stats are free-form; pull a value as display text.
 function stat(stats: { [key: string]: unknown }, key: string): string {
