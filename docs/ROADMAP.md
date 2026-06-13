@@ -95,7 +95,7 @@
 - [x] **S2-11** 빈 상태 UI — 재사용 `EmptyState`(아이콘+메시지)로 흩어진 빈 상태 통일(목록 필터/경기/시즌). 대시보드 "오늘 경기 없음"은 S2-03에서 이 컴포넌트 재사용
 
 #### 품질
-- [x] **S2-12** Lighthouse 측정 → 저위험 폴리시 적용. 측정 결과 A11y/BP/SEO 100, 폰트는 next/font가 이미 self-host+preload. 성능: 홈 CLS 0.20→0.09(로딩 스켈레톤을 실제 레이아웃에 맞춤), recharts dynamic import로 초기 번들에서 344K 분리. 성능 90+ 미달(상세 LCP ~5.9s 등)의 근본은 클라이언트 fetch 구조 → SSR prefetch는 후속(Sprint 4 폴리시 백로그)
+- [x] **S2-12** Lighthouse 측정 → 저위험 폴리시 적용. PageSpeed Insights(홈) **데스크톱 97 / 모바일 87** — A11y/BP/SEO 100, 폰트는 next/font가 이미 self-host+preload. 적용: 홈 CLS 0.20→0.09(로딩 스켈레톤을 실제 레이아웃에 맞춤), recharts dynamic import로 초기 번들에서 344K 분리. 데스크톱은 90+ 달성, 모바일은 87(근접). 남은 모바일 격차의 근본은 클라이언트 fetch 구조(상세 LCP) → SSR prefetch는 후속(Sprint 4 폴리시 백로그)
 - [x] **S2-13** 백엔드 통합 테스트 추가 (전체 엔드포인트) — 빈 DB 경로(전 엔드포인트) + 읽기 엔드포인트 Cache-Control 헤더 검증 추가. `empty_client` fixture + 비ASCII 경로에서 로컬 통합 테스트가 돌도록 `ssl=False`(트러블슈팅 07)
 - [ ] **S2-14** Sentry 첫 알람 셋업 (Discord 또는 이메일)
 
