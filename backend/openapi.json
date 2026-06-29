@@ -393,6 +393,17 @@
             ],
             "title": "Is Home"
           },
+          "level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level"
+          },
           "group_name": {
             "type": "string",
             "title": "Group Name"
@@ -608,6 +619,10 @@
             "type": "string",
             "title": "Group Name"
           },
+          "level": {
+            "type": "string",
+            "title": "Level"
+          },
           "stats": {
             "additionalProperties": true,
             "type": "object",
@@ -618,6 +633,7 @@
         "required": [
           "season",
           "group_name",
+          "level",
           "stats"
         ],
         "title": "SeasonStatsOut"

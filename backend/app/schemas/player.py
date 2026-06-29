@@ -11,6 +11,7 @@ class SeasonStatsOut(BaseModel):
 
     season: int
     group_name: str
+    level: str
     stats: dict[str, Any]
 
 

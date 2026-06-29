@@ -27,6 +27,7 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     assert detail["full_name_ko"] == "김혜성"
     assert detail["birth_date"] == "1999-01-27"
     assert detail["season_stats"][0]["group_name"] == "hitting"
+    assert detail["season_stats"][0]["level"] == "MLB"
     assert detail["season_stats"][0]["stats"]["homeRuns"] == 5
 
     # games: newest first

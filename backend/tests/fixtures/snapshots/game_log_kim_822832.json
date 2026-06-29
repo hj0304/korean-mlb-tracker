@@ -5,6 +5,7 @@
     "game_date": "2026-04-06",
     "opponent_id": 141,
     "is_home": false,
+    "level": "MLB",
     "group_name": "hitting",
     "stats": {
       "summary": "2-4 | BB, R",

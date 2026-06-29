@@ -75,6 +75,7 @@ async def _build_games(
             opponent_name=name,
             opponent_abbrev=abbrev,
             is_home=g.is_home,
+            level=g.level,
             group_name=g.group_name,
             stats=g.stats,
         )

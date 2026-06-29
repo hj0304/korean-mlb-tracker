@@ -15,5 +15,6 @@ class GameLogOut(BaseModel):
     opponent_name: str | None = None
     opponent_abbrev: str | None = None
     is_home: bool | None
+    level: str | None = None
     group_name: str
     stats: dict[str, Any]
