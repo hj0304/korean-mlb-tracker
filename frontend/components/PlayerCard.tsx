@@ -8,7 +8,14 @@ export function PlayerCard({ player }: { player: Player }) {
     <Link href={`/players/${player.id}`} className="block">
       <Card className="h-full transition-colors hover:bg-accent">
         <CardHeader>
-          <CardTitle>{player.full_name_ko}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            {player.full_name_ko}
+            {player.is_honorary ? (
+              <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
+                명예 한국인
+              </span>
+            ) : null}
+          </CardTitle>
           <CardDescription>{player.full_name_en}</CardDescription>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">

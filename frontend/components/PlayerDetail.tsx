@@ -352,7 +352,14 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold tracking-tight">{p.full_name_ko}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl font-bold tracking-tight">{p.full_name_ko}</h1>
+          {p.is_honorary ? (
+            <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              명예 한국인
+            </span>
+          ) : null}
+        </div>
         <p className="text-muted-foreground">{p.full_name_en}</p>
         <p className="text-sm text-muted-foreground">
           {p.position}

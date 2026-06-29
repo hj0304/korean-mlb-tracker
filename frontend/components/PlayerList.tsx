@@ -25,8 +25,17 @@ const LEVEL_LABEL: Record<string, string> = {
 
 const ALL = "ALL";
 
+// "명예 한국인" (honorary) are tracked alongside Korean nationals but shown as a
+// separate group, so the list filters on two independent axes: category + level.
+const CATEGORIES = [
+  { value: ALL, label: "전체" },
+  { value: "korean", label: "한국인" },
+  { value: "honorary", label: "명예 한국인" },
+] as const;
+
 export function PlayerList() {
   const { data, isLoading, error, refetch } = usePlayers();
+  const [category, setCategory] = useState<string>(ALL);
   const [level, setLevel] = useState<string>(ALL);
 
   if (isLoading) {
@@ -50,18 +59,47 @@ export function PlayerList() {
   }
 
   const players = data ?? [];
-  const presentLevels = LEVEL_ORDER.filter((l) => players.some((p) => p.current_level === l));
-  const filtered = level === ALL ? players : players.filter((p) => p.current_level === level);
+  // Category first; the level tabs (counts included) then reflect that subset.
+  const inCategory =
+    category === ALL
+      ? players
+      : players.filter((p) => (category === "honorary") === p.is_honorary);
+  const presentLevels = LEVEL_ORDER.filter((l) => inCategory.some((p) => p.current_level === l));
+  const activeLevel =
+    level !== ALL && (presentLevels as readonly string[]).includes(level) ? level : ALL;
+  const filtered =
+    activeLevel === ALL ? inCategory : inCategory.filter((p) => p.current_level === activeLevel);
 
   return (
     <div className="flex flex-col gap-6">
-      <Tabs value={level} onValueChange={setLevel}>
+      <Tabs
+        value={category}
+        onValueChange={(v) => {
+          setCategory(v);
+          setLevel(ALL); // reset level so it stays valid for the new category
+        }}
+      >
         <div className="overflow-x-auto">
           <TabsList>
-            <TabsTrigger value={ALL}>전체 {players.length}</TabsTrigger>
+            {CATEGORIES.map((c) => (
+              <TabsTrigger key={c.value} value={c.value}>
+                {c.label}{" "}
+                {c.value === ALL
+                  ? players.length
+                  : players.filter((p) => (c.value === "honorary") === p.is_honorary).length}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
+      </Tabs>
+
+      <Tabs value={activeLevel} onValueChange={setLevel}>
+        <div className="overflow-x-auto">
+          <TabsList>
+            <TabsTrigger value={ALL}>전체 {inCategory.length}</TabsTrigger>
             {presentLevels.map((l) => (
               <TabsTrigger key={l} value={l}>
-                {LEVEL_LABEL[l]} {players.filter((p) => p.current_level === l).length}
+                {LEVEL_LABEL[l]} {inCategory.filter((p) => p.current_level === l).length}
               </TabsTrigger>
             ))}
           </TabsList>
