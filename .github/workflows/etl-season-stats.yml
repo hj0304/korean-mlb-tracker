@@ -2,11 +2,11 @@ name: etl-season-stats
 
 # Keeps season_stats fresh: re-syncs each tracked player's season totals daily.
 # daily_games only refreshes per-game rows, so without this the season summary
-# (AVG/OPS, totals) drifts stale. Runs alongside etl-daily-games at KST noon.
-# GitHub Actions cron is UTC; 03:00 UTC == 12:00 KST.
+# (AVG/OPS, totals) drifts stale. Runs alongside etl-daily-games at 08:00 UTC ==
+# 17:00 KST, after the US slate finishes. GitHub Actions cron is UTC.
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 8 * * *'
   workflow_dispatch:
 
 jobs:
