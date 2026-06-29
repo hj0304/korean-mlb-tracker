@@ -283,6 +283,7 @@ function SeasonTable({
       <TableHeader>
         <TableRow className="bg-muted/50">
           <TableHead>시즌</TableHead>
+          <TableHead>팀</TableHead>
           {cols.map(([key, label]) => (
             <TableHead key={key} className="text-right">
               {label}
@@ -294,6 +295,12 @@ function SeasonTable({
         {seasons.map((s) => (
           <TableRow key={s.season}>
             <TableCell className="font-medium">{s.season}</TableCell>
+            <TableCell className="whitespace-nowrap" title={s.team_name ?? undefined}>
+              {/* No team_id = a multi-team season (the combined split has no team). */}
+              {s.team_id === null || s.team_id === undefined
+                ? "여러 팀"
+                : (s.team_abbrev ?? s.team_name ?? s.team_id)}
+            </TableCell>
             {cols.map(([key]) => (
               <TableCell key={key} className="text-right">
                 {stat(s.stats, key)}
@@ -349,6 +356,7 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
         <p className="text-muted-foreground">{p.full_name_en}</p>
         <p className="text-sm text-muted-foreground">
           {p.position}
+          {p.current_team_name ? ` · ${p.current_team_name}` : ""}
           {p.current_level ? ` · ${p.current_level}` : ""}
           {p.bats ? ` · 타격 ${p.bats}` : ""}
           {p.throws ? ` · 투구 ${p.throws}` : ""}

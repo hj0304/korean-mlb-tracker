@@ -196,6 +196,10 @@ export interface components {
             throws: string | null;
             /** Birth Date */
             birth_date: string | null;
+            /** Current Team Name */
+            current_team_name?: string | null;
+            /** Current Team Abbrev */
+            current_team_abbrev?: string | null;
             /** Season Stats */
             season_stats: components["schemas"]["SeasonStatsOut"][];
         };
@@ -229,6 +233,12 @@ export interface components {
             group_name: string;
             /** Level */
             level: string;
+            /** Team Id */
+            team_id?: number | null;
+            /** Team Name */
+            team_name?: string | null;
+            /** Team Abbrev */
+            team_abbrev?: string | null;
             /** Stats */
             stats: {
                 [key: string]: unknown;
