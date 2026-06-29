@@ -26,6 +26,7 @@ def _player(**overrides: Any) -> Player:
         "current_team_id": 119,
         "current_level": "MLB",
         "is_active": True,
+        "is_honorary": False,
         "bats": "L",
         "throws": "R",
         "birth_date": date(1999, 1, 27),

@@ -486,6 +486,10 @@
             "type": "boolean",
             "title": "Is Active"
           },
+          "is_honorary": {
+            "type": "boolean",
+            "title": "Is Honorary"
+          },
           "bats": {
             "anyOf": [
               {
@@ -560,6 +564,7 @@
           "current_team_id",
           "current_level",
           "is_active",
+          "is_honorary",
           "bats",
           "throws",
           "birth_date",
@@ -615,6 +620,10 @@
           "is_active": {
             "type": "boolean",
             "title": "Is Active"
+          },
+          "is_honorary": {
+            "type": "boolean",
+            "title": "Is Honorary"
           }
         },
         "type": "object",
@@ -626,7 +635,8 @@
           "player_type",
           "current_team_id",
           "current_level",
-          "is_active"
+          "is_active",
+          "is_honorary"
         ],
         "title": "PlayerOut",
         "description": "Player summary for the list endpoint / cards."
