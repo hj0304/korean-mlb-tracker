@@ -35,6 +35,11 @@ def test_transform_year_by_year_combines_multi_team_season() -> None:
     assert y2025["stats"]["gamesPlayed"] == 48
     # MLB seasons are labelled with their level (a row column, not inside stats)
     assert y2025["level"] == "MLB"
+    # 2025 was split across two teams -> combined split has no team
+    assert y2025["team_id"] is None
+    # a single-team season carries that team's id
+    y2021 = next(r for r in rows if r["season"] == 2021)
+    assert y2021["team_id"] == 135
 
 
 def test_transform_year_by_year_keeps_each_level() -> None:

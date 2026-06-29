@@ -12,7 +12,7 @@ from typing import Any
 from fastapi.testclient import TestClient
 
 from app.api.deps import get_session
-from app.db.models import GameLog, Player, SeasonStats
+from app.db.models import GameLog, Player, SeasonStats, Team
 from app.main import app
 
 
@@ -60,15 +60,22 @@ class _FakeSession:
     inspection is needed.
     """
 
-    def __init__(self, execute_items: Sequence[Any] = (), get_result: Any = None) -> None:
+    def __init__(
+        self,
+        execute_items: Sequence[Any] = (),
+        get_result: Any = None,
+        team_result: Any = None,
+    ) -> None:
         self._execute_items = execute_items
         self._get_result = get_result
+        self._team_result = team_result
 
     async def execute(self, *args: Any, **kwargs: Any) -> _Result:
         return _Result(list(self._execute_items))
 
-    async def get(self, *args: Any, **kwargs: Any) -> Any:
-        return self._get_result
+    async def get(self, model: Any, *args: Any, **kwargs: Any) -> Any:
+        # _build_player gets the Player, then the current Team separately.
+        return self._team_result if model is Team else self._get_result
 
 
 def _use(session: _FakeSession) -> None:
@@ -110,9 +117,18 @@ def test_get_player_detail() -> None:
         season=2026,
         group_name="hitting",
         level="MLB",
+        team_id=147,
         stats={"avg": ".300", "homeRuns": 5},
     )
-    _use(_FakeSession(execute_items=[stats], get_result=_player()))
+    team = Team(id=119, name="Los Angeles Dodgers", abbrev="LAD", league="NL", level="MLB")
+    # _build_player joins teams for each season row, then resolves the current team.
+    _use(
+        _FakeSession(
+            execute_items=[(stats, "New York Yankees", "NYY")],
+            get_result=_player(),
+            team_result=team,
+        )
+    )
     try:
         r = TestClient(app).get("/api/v1/players/808975")
     finally:
@@ -121,7 +137,9 @@ def test_get_player_detail() -> None:
     body = r.json()
     assert body["full_name_ko"] == "김혜성"
     assert body["birth_date"] == "1999-01-27"
+    assert body["current_team_abbrev"] == "LAD"
     assert body["season_stats"][0]["group_name"] == "hitting"
+    assert body["season_stats"][0]["team_abbrev"] == "NYY"
     assert body["season_stats"][0]["stats"]["homeRuns"] == 5
 
 

@@ -520,6 +520,28 @@
             ],
             "title": "Birth Date"
           },
+          "current_team_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Team Name"
+          },
+          "current_team_abbrev": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Team Abbrev"
+          },
           "season_stats": {
             "items": {
               "$ref": "#/components/schemas/SeasonStatsOut"
@@ -622,6 +644,39 @@
           "level": {
             "type": "string",
             "title": "Level"
+          },
+          "team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Id"
+          },
+          "team_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Name"
+          },
+          "team_abbrev": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Abbrev"
           },
           "stats": {
             "additionalProperties": true,

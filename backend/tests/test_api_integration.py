@@ -28,7 +28,9 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     assert detail["birth_date"] == "1999-01-27"
     assert detail["season_stats"][0]["group_name"] == "hitting"
     assert detail["season_stats"][0]["level"] == "MLB"
+    assert detail["season_stats"][0]["team_abbrev"] == "NYY"  # team_id 147 resolved
     assert detail["season_stats"][0]["stats"]["homeRuns"] == 5
+    assert detail["current_team_abbrev"] == "LAD"  # current_team_id 119 resolved
 
     # games: newest first
     r = await seeded_client.get("/api/v1/players/808975/games")
