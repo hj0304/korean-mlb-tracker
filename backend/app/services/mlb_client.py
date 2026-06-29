@@ -38,9 +38,14 @@ async def get_person(client: httpx.AsyncClient, player_id: int) -> dict[str, Any
     return await _get(client, f"people/{player_id}", {"hydrate": "currentTeam"})
 
 
-async def get_team(client: httpx.AsyncClient, team_id: int) -> dict[str, Any]:
-    """Fetch a team: ``/teams/{id}``. Carries ``sport.id`` (1=MLB, 11-14=MiLB)."""
-    return await _get(client, f"teams/{team_id}")
+async def get_teams(client: httpx.AsyncClient, sport_id: int) -> dict[str, Any]:
+    """Fetch every team for a sport: ``/teams?sportId=`` (1=MLB, 11-14/16=MiLB).
+
+    Each team carries ``name``, ``abbreviation``, ``league`` and ``sport`` — used
+    to populate the ``teams`` table (so opponent ids render as names) and to
+    derive each player's level from their current team's sport.
+    """
+    return await _get(client, "teams", {"sportId": sport_id})
 
 
 async def get_season_stats(

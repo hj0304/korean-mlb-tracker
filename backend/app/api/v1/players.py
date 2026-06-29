@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_session
 from app.core.cache import TTLCache
-from app.db.models import GameLog, Player, SeasonStats
+from app.db.models import GameLog, Player, SeasonStats, Team
 from app.schemas.game import GameLogOut
 from app.schemas.player import PlayerDetailOut, PlayerOut, SeasonStatsOut
 
@@ -58,12 +58,28 @@ async def _build_player(session: AsyncSession, player_id: int) -> PlayerDetailOu
 async def _build_games(
     session: AsyncSession, player_id: int, since: date | None
 ) -> list[GameLogOut]:
-    stmt = select(GameLog).where(GameLog.player_id == player_id)
+    stmt = (
+        select(GameLog, Team.name, Team.abbrev)
+        .outerjoin(Team, Team.id == GameLog.opponent_id)
+        .where(GameLog.player_id == player_id)
+    )
     if since is not None:
         stmt = stmt.where(GameLog.game_date >= since)
     stmt = stmt.order_by(GameLog.game_date.desc(), GameLog.group_name)
     result = await session.execute(stmt)
-    return [GameLogOut.model_validate(g) for g in result.scalars().all()]
+    return [
+        GameLogOut(
+            game_id=g.game_id,
+            game_date=g.game_date,
+            opponent_id=g.opponent_id,
+            opponent_name=name,
+            opponent_abbrev=abbrev,
+            is_home=g.is_home,
+            group_name=g.group_name,
+            stats=g.stats,
+        )
+        for g, name, abbrev in result.all()
+    ]
 
 
 @router.get("/players", response_model=list[PlayerOut])

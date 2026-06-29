@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_session
 from app.core.cache import TTLCache
-from app.db.models import GameLog, Player
+from app.db.models import GameLog, Player, Team
 from app.schemas.dashboard import DashboardGameOut, DashboardOut
 
 router = APIRouter(prefix="/api/v1", tags=["dashboard"])
@@ -22,8 +22,9 @@ async def _build_today(session: AsyncSession) -> DashboardOut:
         return DashboardOut(date=None, games=[])
     rows = (
         await session.execute(
-            select(GameLog, Player)
+            select(GameLog, Player, Team.name, Team.abbrev)
             .join(Player, Player.id == GameLog.player_id)
+            .outerjoin(Team, Team.id == GameLog.opponent_id)
             .where(GameLog.game_date == latest)
             .order_by(Player.full_name_en, GameLog.group_name)
         )
@@ -36,11 +37,13 @@ async def _build_today(session: AsyncSession) -> DashboardOut:
             current_level=p.current_level,
             player_type=p.player_type,
             opponent_id=g.opponent_id,
+            opponent_name=name,
+            opponent_abbrev=abbrev,
             is_home=g.is_home,
             group_name=g.group_name,
             stats=g.stats,
         )
-        for g, p in rows
+        for g, p, name, abbrev in rows
     ]
     return DashboardOut(date=latest, games=games)
 

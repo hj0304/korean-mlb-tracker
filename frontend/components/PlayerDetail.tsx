@@ -211,8 +211,8 @@ function GamesTable({
         {rows.map((g) => (
           <TableRow key={`${g.game_id}-${g.group_name}`}>
             <TableCell className="whitespace-nowrap">{g.game_date}</TableCell>
-            <TableCell className="whitespace-nowrap">
-              {g.is_home ? "vs" : "@"} {g.opponent_id ?? "-"}
+            <TableCell className="whitespace-nowrap" title={g.opponent_name ?? undefined}>
+              {g.is_home ? "vs" : "@"} {g.opponent_abbrev ?? g.opponent_id ?? "-"}
             </TableCell>
             {cols.map(([key]) => (
               <TableCell key={key} className="text-right">

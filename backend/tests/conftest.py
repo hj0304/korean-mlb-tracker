@@ -17,7 +17,7 @@ from app.api.deps import get_session
 from app.api.v1 import dashboard as dashboard_api
 from app.api.v1 import players as players_api
 from app.db.base import Base
-from app.db.models import GameLog, Player, SeasonStats
+from app.db.models import GameLog, Player, SeasonStats, Team
 from app.main import app
 
 
@@ -71,6 +71,13 @@ async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
 
     maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
     async with maker() as session:
+        # Opponent teams, so game logs can resolve opponent_id -> name/abbrev.
+        session.add_all(
+            [
+                Team(id=141, name="Toronto Blue Jays", abbrev="TOR", league="AL", level="MLB"),
+                Team(id=147, name="New York Yankees", abbrev="NYY", league="AL", level="MLB"),
+            ]
+        )
         session.add(
             Player(
                 id=808975,
