@@ -99,6 +99,7 @@
 - [x] **S2-13** 백엔드 통합 테스트 추가 (전체 엔드포인트) — 빈 DB 경로(전 엔드포인트) + 읽기 엔드포인트 Cache-Control 헤더 검증 추가. `empty_client` fixture + 비ASCII 경로에서 로컬 통합 테스트가 돌도록 `ssl=False`(트러블슈팅 07)
 - [x] **S2-14** Sentry 첫 알람 셋업 (이메일) — 통합 알람 1개로 backend+frontend 프로젝트 동시 커버. 조건: "A new issue is created"(전 환경), 액션: Member(본인) 이메일 알림. Send Test Notification으로 수신 확인. 대시보드 설정이라 코드 변경 없음
 - [x] **S2-15** 레벨별 성적 분리 — 한 선수가 여러 레벨(MLB/AAA/…)을 뛴 경우 통산·경기별 기록을 레벨별로 분리. PR-A(#67 백엔드): `season_stats` PK에 `level` 추가, `game_logs`에 `level` 컬럼, ETL/트랜스포머가 레벨별 행 방출, API 노출, 라이브 마이그레이션+재구축(74행). PR-B(#68 프론트): 상세 페이지 레벨 탭(current_level 기본, 2개 이상일 때 표시)
+- [x] **S2-16** 소속팀 정보 + 연도별 이력 — `season_stats`에 `team_id` 추가(#72 백엔드), 상세 헤더에 현재 팀명 + 통산표에 '팀' 컬럼(#73 프론트). 다팀 시즌은 combined split이라 `team_id` null → "여러 팀"으로 표기. team 이름은 `teams` 조인으로 해석(roster_sync가 전 레벨 팀 시드)
 
 **산출물**: 거의 완성된 사이트. 차트가 멋있게 들어가서 스크린샷이 화려해짐.
 
