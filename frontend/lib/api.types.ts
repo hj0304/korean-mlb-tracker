@@ -190,6 +190,8 @@ export interface components {
             current_level: string | null;
             /** Is Active */
             is_active: boolean;
+            /** Is Honorary */
+            is_honorary: boolean;
             /** Bats */
             bats: string | null;
             /** Throws */
@@ -224,6 +226,8 @@ export interface components {
             current_level: string | null;
             /** Is Active */
             is_active: boolean;
+            /** Is Honorary */
+            is_honorary: boolean;
         };
         /** SeasonStatsOut */
         SeasonStatsOut: {
