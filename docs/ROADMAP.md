@@ -98,7 +98,7 @@
 - [x] **S2-12** Lighthouse 측정 → 저위험 폴리시 적용. PageSpeed Insights(홈) **데스크톱 97 / 모바일 87** — A11y/BP/SEO 100, 폰트는 next/font가 이미 self-host+preload. 적용: 홈 CLS 0.20→0.09(로딩 스켈레톤을 실제 레이아웃에 맞춤), recharts dynamic import로 초기 번들에서 344K 분리. 데스크톱은 90+ 달성, 모바일은 87(근접). 남은 모바일 격차의 근본은 클라이언트 fetch 구조(상세 LCP) → SSR prefetch는 후속(Sprint 4 폴리시 백로그)
 - [x] **S2-13** 백엔드 통합 테스트 추가 (전체 엔드포인트) — 빈 DB 경로(전 엔드포인트) + 읽기 엔드포인트 Cache-Control 헤더 검증 추가. `empty_client` fixture + 비ASCII 경로에서 로컬 통합 테스트가 돌도록 `ssl=False`(트러블슈팅 07)
 - [x] **S2-14** Sentry 첫 알람 셋업 (이메일) — 통합 알람 1개로 backend+frontend 프로젝트 동시 커버. 조건: "A new issue is created"(전 환경), 액션: Member(본인) 이메일 알림. Send Test Notification으로 수신 확인. 대시보드 설정이라 코드 변경 없음
-- [ ] **S2-15** 레벨별 성적 분리 — 한 선수가 여러 레벨(MLB/AAA/…)을 뛴 경우 통산·경기별 기록을 레벨별로 분리. PR-A(백엔드): `season_stats` PK에 `level` 추가, `game_logs`에 `level` 컬럼, ETL/트랜스포머가 레벨별 행 방출, API 노출. PR-B(프론트): 상세 페이지 레벨 탭
+- [x] **S2-15** 레벨별 성적 분리 — 한 선수가 여러 레벨(MLB/AAA/…)을 뛴 경우 통산·경기별 기록을 레벨별로 분리. PR-A(#67 백엔드): `season_stats` PK에 `level` 추가, `game_logs`에 `level` 컬럼, ETL/트랜스포머가 레벨별 행 방출, API 노출, 라이브 마이그레이션+재구축(74행). PR-B(#68 프론트): 상세 페이지 레벨 탭(current_level 기본, 2개 이상일 때 표시)
 
 **산출물**: 거의 완성된 사이트. 차트가 멋있게 들어가서 스크린샷이 화려해짐.
 
