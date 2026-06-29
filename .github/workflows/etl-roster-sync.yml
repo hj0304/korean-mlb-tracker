@@ -1,13 +1,13 @@
 name: etl-roster-sync
 
 # Keeps the players roster fresh: current team/level, plus the teams table that
-# game/season rows resolve opponent and team names against. Runs at 07:00 UTC ==
-# 16:00 KST, an hour before daily_games/season_stats (08:00 UTC), so a call-up or
+# game/season rows resolve opponent and team names against. Runs at 06:00 UTC ==
+# 15:00 KST, an hour before daily_games/season_stats (07:00 UTC), so a call-up or
 # option is reflected in current_team_id before daily_games filters that day's
 # games by team. GitHub Actions cron is UTC.
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 jobs:

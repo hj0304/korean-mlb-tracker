@@ -1,13 +1,15 @@
 name: etl-daily-games
 
 # Keeps game_logs fresh: syncs yesterday's completed games once a day.
-# Runs at 08:00 UTC == 17:00 KST, after the whole US slate (incl. west-coast and
-# extra-innings games) has finished (~06:00-06:30 UTC). Running earlier — e.g. at
-# KST noon — fires mid-US-night, so the games aren't Final yet and get skipped,
-# leaving the KST-dated feed a day stale. GitHub Actions cron is UTC.
+# Runs at 07:00 UTC == 16:00 KST, after the whole US slate has finished. The
+# latest-ending games are west-coast night games (incl. MiLB Pacific) starting
+# ~02:15 UTC; even extra-inning ones end ~05:55 UTC, so 07:00 leaves a ~1h margin
+# for marathons. Running earlier — e.g. KST noon — fires mid-US-night, so games
+# aren't Final yet and get skipped, leaving the KST-dated feed a day stale.
+# GitHub Actions cron is UTC.
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
       date:
