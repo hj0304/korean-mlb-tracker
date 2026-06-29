@@ -31,6 +31,7 @@ class PlayerOut(BaseModel):
     current_team_id: int | None
     current_level: str | None
     is_active: bool
+    is_honorary: bool
 
 
 class PlayerDetailOut(PlayerOut):

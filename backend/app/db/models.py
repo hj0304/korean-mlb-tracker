@@ -32,6 +32,8 @@ class Player(Base):
     current_team_id: Mapped[int | None] = mapped_column(BigInteger)
     current_level: Mapped[str | None] = mapped_column(Text)  # MLB | AAA | AA | A+ | A
     is_active: Mapped[bool] = mapped_column(Boolean, server_default=text("true"))
+    # "명예 한국인": non-Korean-born player who represented Team Korea (vs actual Korean).
+    is_honorary: Mapped[bool] = mapped_column(Boolean, server_default=text("false"))
     birth_date: Mapped[date | None] = mapped_column(Date)
     bats: Mapped[str | None] = mapped_column(CHAR(1))  # L | R | S
     throws: Mapped[str | None] = mapped_column(CHAR(1))

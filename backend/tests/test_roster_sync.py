@@ -25,7 +25,15 @@ def test_build_player_row() -> None:
         "bats": "L",
         "throws": "R",
         "birth_date": date(1999, 1, 27),
+        "is_honorary": False,
     }
+
+
+def test_build_player_row_honorary() -> None:
+    """An honorary player (명예 한국인) is flagged on the row."""
+    person = _load(FIXTURES / "person_kim.json")["people"][0]
+    row = roster_sync.build_player_row(person, "토미 에드먼", "MLB", is_honorary=True)
+    assert row["is_honorary"] is True
 
 
 def test_build_player_row_milb_with_team() -> None:

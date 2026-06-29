@@ -26,6 +26,17 @@ KOREAN_PLAYERS: dict[int, str] = {
     836688: "문서준",
 }
 
+# "명예 한국인" — not Korean-born, but Korean-parent players who suited up for the
+# 대한민국 national team in international play (WBC etc.). Tracked as a distinct
+# group (players.is_honorary) so the UI can label/filter them separately. (S2-17)
+HONORARY_PLAYERS: dict[int, str] = {
+    669242: "토미 에드먼",  # Tommy Edman
+    641540: "데인 더닝",  # Dane Dunning
+    694376: "셰이 위트컴",  # Shay Whitcomb
+    663330: "저마이 존스",  # Jahmai Jones
+    676617: "라일리 오브라이언",  # Riley O'Brien
+}
+
 # MLB Stats API sportId -> our level label. 16 = Rookie (complex leagues), where
 # several tracked prospects currently play. Used to label both the roster and
 # each season-stats row.
