@@ -71,14 +71,17 @@ async def run(game_date: date | None = None) -> None:
     async with mlb_client.make_client() as client:
         # MLB + every MiLB level, since tracked players span all of them.
         async with asyncio.TaskGroup() as tg:
-            schedule_tasks = [
-                tg.create_task(mlb_client.get_schedule(client, date_str, sport_id=sport_id))
+            schedule_tasks = {
+                sport_id: tg.create_task(
+                    mlb_client.get_schedule(client, date_str, sport_id=sport_id)
+                )
                 for sport_id in SPORT_ID_TO_LEVEL
-            ]
-        # Keep only completed games one of our teams played in.
+            }
+        # Keep only completed games one of our teams played in, tagged with the
+        # level of the schedule they came from.
         games = [
-            (game_pk, game_day)
-            for task in schedule_tasks
+            (game_pk, game_day, SPORT_ID_TO_LEVEL[sport_id])
+            for sport_id, task in schedule_tasks.items()
             for game_pk, game_day, game_team_ids in extract_completed_games(task.result())
             if game_team_ids & team_ids
         ]
@@ -88,14 +91,14 @@ async def run(game_date: date | None = None) -> None:
         async with asyncio.TaskGroup() as tg:
             boxscores = {
                 game_pk: tg.create_task(mlb_client.get_boxscore(client, game_pk))
-                for game_pk, _ in games
+                for game_pk, _, _ in games
             }
 
     rows: list[dict[str, Any]] = []
-    for game_pk, game_day in games:
+    for game_pk, game_day, level in games:
         boxscore = boxscores[game_pk].result()
         for pid in player_ids:
-            for row in transform_game_log(boxscore, pid, game_pk, game_day.isoformat()):
+            for row in transform_game_log(boxscore, pid, game_pk, game_day.isoformat(), level):
                 row["game_date"] = game_day  # Date column wants a date, not the ISO string
                 rows.append(row)
 

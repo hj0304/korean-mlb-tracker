@@ -111,10 +111,12 @@ CREATE TABLE season_stats (
   player_id    BIGINT REFERENCES players(id),
   season       INT,
   group_name   TEXT,                             -- 'hitting' | 'pitching' | 'fielding'
+  level        TEXT,                             -- 'MLB' | 'AAA' | 'AA' | 'A+' | 'A' | 'R'
   stats        JSONB NOT NULL,                   -- 유연성 위해 JSONB 사용
   fetched_at   TIMESTAMPTZ DEFAULT now(),
-  PRIMARY KEY (player_id, season, group_name)
+  PRIMARY KEY (player_id, season, group_name, level)
 );
+-- level이 PK에 포함됨: 한 시즌에 여러 레벨(예: AAA↔MLB 콜업)을 뛰면 레벨당 1행 유지.
 
 -- 경기별 박스스코어 (선수×경기 1건)
 CREATE TABLE game_logs (
@@ -123,6 +125,7 @@ CREATE TABLE game_logs (
   game_date   DATE NOT NULL,
   opponent_id BIGINT,
   is_home     BOOLEAN,
+  level       TEXT,                              -- 경기 레벨(상대팀과 동일): 'MLB' | 'AAA' | ...
   group_name  TEXT,                              -- 'hitting' | 'pitching'
   stats       JSONB NOT NULL,                    -- AB, H, HR, RBI, ... or IP, ER, K, ...
   fetched_at  TIMESTAMPTZ DEFAULT now(),
@@ -148,7 +151,7 @@ CREATE TABLE etl_runs (
 
 **인덱스 점검 (S2-04).** 실제 쿼리를 `EXPLAIN ANALYZE`로 확인한 결과 기존 인덱스가 모든 접근 패턴을 커버하므로 **추가 인덱스 불필요**:
 - 최근 경기 (`WHERE player_id=? ORDER BY game_date DESC`) → `idx_game_logs_player_date (player_id, game_date DESC)` 사용 (Bitmap Index Scan, ~2ms).
-- 시즌 스탯 (`WHERE player_id=? ORDER BY season DESC, group_name`) → `season_stats_pkey (player_id, season, group_name)` 역방향 스캔 사용 (~4ms).
+- 시즌 스탯 (`WHERE player_id=? ORDER BY season DESC, group_name`) → `season_stats_pkey (player_id, season, group_name, level)` 역방향 스캔 사용 (~4ms).
 - 선수 목록 레벨 필터 → 14행짜리 테이블이라 seq scan이 더 빠름(인덱스 무의미).
 
 체감 지연의 원인은 쿼리가 아니라 백엔드↔DB 리전 거리였고, 캐싱(S2-05)으로 해소됨.

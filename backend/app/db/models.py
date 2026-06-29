@@ -57,6 +57,7 @@ class SeasonStats(Base):
     player_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("players.id"), primary_key=True)
     season: Mapped[int] = mapped_column(Integer, primary_key=True)
     group_name: Mapped[str] = mapped_column(Text, primary_key=True)  # hitting | pitching | fielding
+    level: Mapped[str] = mapped_column(Text, primary_key=True)  # MLB | AAA | AA | A+ | A | R
     stats: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -69,6 +70,7 @@ class GameLog(Base):
     game_date: Mapped[date] = mapped_column(Date, nullable=False)
     opponent_id: Mapped[int | None] = mapped_column(BigInteger)
     is_home: Mapped[bool | None] = mapped_column(Boolean)
+    level: Mapped[str | None] = mapped_column(Text)  # MLB | AAA | AA | A+ | A | R
     group_name: Mapped[str] = mapped_column(Text, primary_key=True)  # hitting | pitching
     stats: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

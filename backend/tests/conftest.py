@@ -99,6 +99,7 @@ async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
                 player_id=808975,
                 season=2026,
                 group_name="hitting",
+                level="MLB",
                 stats={"avg": ".300", "homeRuns": 5},
             )
         )

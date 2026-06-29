@@ -109,6 +109,7 @@ def test_get_player_detail() -> None:
         player_id=808975,
         season=2026,
         group_name="hitting",
+        level="MLB",
         stats={"avg": ".300", "homeRuns": 5},
     )
     _use(_FakeSession(execute_items=[stats], get_result=_player()))
