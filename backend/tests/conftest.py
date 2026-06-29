@@ -76,6 +76,8 @@ async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
             [
                 Team(id=141, name="Toronto Blue Jays", abbrev="TOR", league="AL", level="MLB"),
                 Team(id=147, name="New York Yankees", abbrev="NYY", league="AL", level="MLB"),
+                # Hyeseong Kim's current team (player.current_team_id=119).
+                Team(id=119, name="Los Angeles Dodgers", abbrev="LAD", league="NL", level="MLB"),
             ]
         )
         session.add(
@@ -100,6 +102,7 @@ async def seeded_client(pg_url: str) -> AsyncGenerator[AsyncClient, None]:
                 season=2026,
                 group_name="hitting",
                 level="MLB",
+                team_id=147,
                 stats={"avg": ".300", "homeRuns": 5},
             )
         )

@@ -4,6 +4,7 @@
     "season": 2021,
     "group_name": "hitting",
     "level": "MLB",
+    "team_id": 135,
     "stats": {
       "age": 25,
       "gamesPlayed": 117,
@@ -46,6 +47,7 @@
     "season": 2022,
     "group_name": "hitting",
     "level": "MLB",
+    "team_id": 135,
     "stats": {
       "age": 26,
       "gamesPlayed": 150,
@@ -88,6 +90,7 @@
     "season": 2023,
     "group_name": "hitting",
     "level": "MLB",
+    "team_id": 135,
     "stats": {
       "age": 27,
       "gamesPlayed": 152,
@@ -130,6 +133,7 @@
     "season": 2024,
     "group_name": "hitting",
     "level": "MLB",
+    "team_id": 135,
     "stats": {
       "age": 28,
       "gamesPlayed": 121,
@@ -172,6 +176,7 @@
     "season": 2025,
     "group_name": "hitting",
     "level": "MLB",
+    "team_id": null,
     "stats": {
       "age": 29,
       "gamesPlayed": 48,
@@ -214,6 +219,7 @@
     "season": 2026,
     "group_name": "hitting",
     "level": "MLB",
+    "team_id": 144,
     "stats": {
       "age": 30,
       "gamesPlayed": 13,

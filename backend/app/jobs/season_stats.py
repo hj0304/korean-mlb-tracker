@@ -53,7 +53,11 @@ async def run() -> None:
     stmt = pg_insert(SeasonStats).values(rows)
     stmt = stmt.on_conflict_do_update(
         index_elements=["player_id", "season", "group_name", "level"],
-        set_={"stats": stmt.excluded.stats, "fetched_at": func.now()},
+        set_={
+            "team_id": stmt.excluded.team_id,
+            "stats": stmt.excluded.stats,
+            "fetched_at": func.now(),
+        },
     )
 
     async with session_maker() as session:

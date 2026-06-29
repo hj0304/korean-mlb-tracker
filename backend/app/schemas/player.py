@@ -12,6 +12,9 @@ class SeasonStatsOut(BaseModel):
     season: int
     group_name: str
     level: str
+    team_id: int | None = None
+    team_name: str | None = None
+    team_abbrev: str | None = None
     stats: dict[str, Any]
 
 
@@ -36,4 +39,6 @@ class PlayerDetailOut(PlayerOut):
     bats: str | None
     throws: str | None
     birth_date: date | None
+    current_team_name: str | None = None
+    current_team_abbrev: str | None = None
     season_stats: list[SeasonStatsOut]

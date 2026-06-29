@@ -49,8 +49,8 @@ def transform_year_by_year(payloads: list[dict[str, Any]], player_id: int) -> li
     combined total over its per-team components. Splits whose sport isn't a
     tracked level are skipped. The level (MLB/AAA/…) is a column on the row.
     """
-    # (season, group_name, level) -> (games_played, stats)
-    best: dict[tuple[int, str, str], tuple[int, dict[str, Any]]] = {}
+    # (season, group_name, level) -> (games_played, team_id, stats)
+    best: dict[tuple[int, str, str], tuple[int, int | None, dict[str, Any]]] = {}
     for payload in payloads:
         for group in payload.get("stats", []):
             group_name = group["group"]["displayName"]
@@ -61,18 +61,21 @@ def transform_year_by_year(payloads: list[dict[str, Any]], player_id: int) -> li
                 season = int(split["season"])
                 stat = split["stat"]
                 games = int(stat.get("gamesPlayed") or 0)
+                # The combined multi-team (numTeams) split carries no team.
+                team_id = (split.get("team") or {}).get("id")
                 key = (season, group_name, level)
                 if key not in best or games > best[key][0]:
-                    best[key] = (games, stat)
+                    best[key] = (games, team_id, stat)
     return [
         {
             "player_id": player_id,
             "season": season,
             "group_name": group_name,
             "level": level,
+            "team_id": team_id,
             "stats": stats,
         }
-        for (season, group_name, level), (_, stats) in best.items()
+        for (season, group_name, level), (_, team_id, stats) in best.items()
     ]
 
 

@@ -42,16 +42,34 @@ async def _build_player(session: AsyncSession, player_id: int) -> PlayerDetailOu
     if player is None:
         raise HTTPException(status_code=404, detail="Player not found")
     result = await session.execute(
-        select(SeasonStats)
+        select(SeasonStats, Team.name, Team.abbrev)
+        .outerjoin(Team, Team.id == SeasonStats.team_id)
         .where(SeasonStats.player_id == player_id)
-        .order_by(SeasonStats.season.desc(), SeasonStats.group_name)
+        .order_by(SeasonStats.season.desc(), SeasonStats.group_name, SeasonStats.level)
+    )
+    season_stats = [
+        SeasonStatsOut(
+            season=s.season,
+            group_name=s.group_name,
+            level=s.level,
+            team_id=s.team_id,
+            team_name=name,
+            team_abbrev=abbrev,
+            stats=s.stats,
+        )
+        for s, name, abbrev in result.all()
+    ]
+    current_team = (
+        await session.get(Team, player.current_team_id) if player.current_team_id else None
     )
     return PlayerDetailOut(
         **PlayerOut.model_validate(player).model_dump(),
         bats=player.bats,
         throws=player.throws,
         birth_date=player.birth_date,
-        season_stats=[SeasonStatsOut.model_validate(s) for s in result.scalars().all()],
+        current_team_name=current_team.name if current_team else None,
+        current_team_abbrev=current_team.abbrev if current_team else None,
+        season_stats=season_stats,
     )
 
 

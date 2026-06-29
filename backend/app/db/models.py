@@ -58,6 +58,7 @@ class SeasonStats(Base):
     season: Mapped[int] = mapped_column(Integer, primary_key=True)
     group_name: Mapped[str] = mapped_column(Text, primary_key=True)  # hitting | pitching | fielding
     level: Mapped[str] = mapped_column(Text, primary_key=True)  # MLB | AAA | AA | A+ | A | R
+    team_id: Mapped[int | None] = mapped_column(BigInteger)  # null = multi-team season
     stats: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
