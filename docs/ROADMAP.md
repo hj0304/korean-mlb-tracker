@@ -124,7 +124,7 @@
 - [ ] **S3-03** 백엔드 OpenAPI 문서를 GitHub Pages 또는 redoc-static으로 호스팅, README에 링크
 - [x] **S3-04** ETL 실패 시 GitHub 이슈 자동 생성 워크플로우 — `workflow_run`으로 3개 ETL 워크플로 실패를 감시하는 단일 `etl-failure-alert.yml`. 같은 워크플로의 열린 이슈가 있으면 코멘트로 합쳐 중복 방지(`etl-failure` 라벨)
 - [ ] **S3-05** Vercel Analytics 또는 Plausible 설정
-- [ ] **S3-06** 작성한 ADR(아키텍처 결정 기록) 5개 정도를 `docs/adr/`에 별도 정리
+- [x] **S3-06** 작성한 ADR(아키텍처 결정 기록)를 `docs/adr/`에 정리 — 신규 5개 추가(0004 JSONB / 0005 TTL캐시 / 0006 KST날짜·크론 / 0007 레벨차원 / 0008 명예한국인), 0002에 부분 갱신 노트, TECH_SPEC §11 표 동기화. 총 8개
 - [ ] **S3-07** 회고 노트 `docs/RETRO.md`: 무엇이 어려웠고 무엇을 배웠는지 (포트폴리오 인터뷰 무기)
 - [ ] **S3-08** 한국 야구 커뮤니티 1곳에 공유 (도그푸딩 외부 사용자 첫 확보)
 

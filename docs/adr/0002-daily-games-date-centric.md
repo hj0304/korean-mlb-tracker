@@ -1,8 +1,13 @@
 # ADR-0002: `daily_games` — 팀 기준이 아닌 날짜 기준 조회
 
 - **Date**: 2026-06-03
-- **Status**: Accepted
+- **Status**: Accepted (부분 갱신 — 아래 참고)
 - **Related**: ROADMAP S1-07, S2-01 / TECH_SPEC §8 (ETL)
+
+> **갱신 노트**: 예고대로 S2-01(MiLB)에서 "그날 전 경기 fetch"는 호출량 때문에
+> **팀 기준 필터로 전환**됐다(`game_team_ids & team_ids`). 그 team_ids는 현재
+> `current_team_id` ∪ `season_stats.team_id`(시즌 중 뛴 모든 팀)로, 트레이드/콜업에
+> 견고하게 보강됨(PR #74). 타임존 단순화 노트는 **ADR-0006**(KST 날짜)이 대체한다.
 
 ## Context
 

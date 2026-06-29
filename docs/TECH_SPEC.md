@@ -329,3 +329,8 @@ NEXT_PUBLIC_SENTRY_DSN=
 | 4 | GitHub Actions cron (vs in-proc) | 호스팅 콜드스타트/재시작과 ETL 잡 결합 분리 |
 | 5 | shadcn/ui (vs MUI/Chakra) | 모던 룩 + 코드 컨트롤 |
 | 6 | Fly.io → Northflank (백엔드 호스팅) | Fly 무료 정책이 trial 후 유료 전환. Northflank Sandbox는 영구 무료 + always-on. 자세히는 `docs/adr/0001-deploy-northflank.md` |
+| 7 | 스탯을 JSONB로 저장 | 50+ 필드·잦은 추가·타자/투수 상이 → 무중단 수용. `docs/adr/0004` |
+| 8 | 읽기 엔드포인트 인프로세스 TTL 캐시(5분), Redis 아님 | 일 1회 갱신 데이터, 외부 의존 0. `docs/adr/0005` |
+| 9 | `game_date`는 KST + ETL 크론 KST 16:00 | 한국 사용자의 "오늘"과 일치, 서부 경기까지 안전. `docs/adr/0006` |
+| 10 | 스탯을 레벨 차원으로 분리(`season_stats` PK에 level, `game_logs.level`) | 콜업/강등 선수의 레벨별 성적 보존. `docs/adr/0007` |
+| 11 | "명예 한국인"을 `is_honorary` 플래그로 별도 추적 | 대표팀 출전 비(非)한국출생 선수 포함하되 구분. `docs/adr/0008` |
