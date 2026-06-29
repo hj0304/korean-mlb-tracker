@@ -155,6 +155,8 @@ export interface components {
             opponent_abbrev?: string | null;
             /** Is Home */
             is_home: boolean | null;
+            /** Level */
+            level?: string | null;
             /** Group Name */
             group_name: string;
             /** Stats */
@@ -225,6 +227,8 @@ export interface components {
             season: number;
             /** Group Name */
             group_name: string;
+            /** Level */
+            level: string;
             /** Stats */
             stats: {
                 [key: string]: unknown;

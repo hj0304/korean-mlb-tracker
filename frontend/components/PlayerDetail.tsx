@@ -2,6 +2,7 @@
 
 import { CalendarOff, Inbox } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
@@ -15,8 +16,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { SeasonStats } from "@/lib/api";
+import type { PlayerDetail as PlayerDetailData, SeasonStats } from "@/lib/api";
 import { usePlayer, usePlayerGames } from "@/lib/queries";
+
+// Highest level first; used to order the level tabs and pick a default.
+const LEVEL_ORDER = ["MLB", "AAA", "AA", "A+", "A", "R"];
 
 // Recharts is heavy; keep it out of the initial bundle and load it only on the
 // detail page when the chart actually renders (ssr:false — it's client-only).
@@ -173,10 +177,12 @@ function DetailSkeleton() {
 function GamesTable({
   playerId,
   group,
+  level,
   cols,
 }: {
   playerId: number;
   group: string;
+  level: string | null;
   cols: [string, string][];
 }) {
   const games = usePlayerGames(playerId);
@@ -189,7 +195,9 @@ function GamesTable({
       <ErrorState message="경기 기록을 불러오지 못했습니다." onRetry={() => void games.refetch()} />
     );
   }
-  const rows = games.data?.filter((g) => g.group_name === group) ?? [];
+  const rows =
+    games.data?.filter((g) => g.group_name === group && (level === null || g.level === level)) ??
+    [];
   if (rows.length === 0) {
     return <EmptyState message="최근 경기 기록이 없습니다." icon={CalendarOff} />;
   }
@@ -228,10 +236,12 @@ function GamesTable({
 
 function ChartSection({
   playerId,
+  level,
   label,
   seasonAvg,
 }: {
   playerId: number;
+  level: string | null;
   label: string;
   seasonAvg: number | null;
 }) {
@@ -240,7 +250,10 @@ function ChartSection({
   if (games.isLoading) {
     return <Skeleton className="h-60 w-full rounded-md" />;
   }
-  const hitting = games.data?.filter((g) => g.group_name === "hitting") ?? [];
+  const hitting =
+    games.data?.filter(
+      (g) => g.group_name === "hitting" && (level === null || g.level === level),
+    ) ?? [];
   // No chart when there's nothing to plot; the table tab still covers the data.
   if (games.error || hitting.length === 0) {
     return null;
@@ -302,11 +315,23 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
       />
     );
   }
+  return <PlayerDetailBody p={player.data} playerId={playerId} />;
+}
 
-  const p = player.data;
+function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: number }) {
   const cfg = configFor(p.player_type);
-  const seasons = p.season_stats
-    .filter((s) => s.group_name === cfg.group)
+  const groupSeasons = p.season_stats.filter((s) => s.group_name === cfg.group);
+  // Levels the player has season rows at, ordered highest-first. A player who
+  // climbed (or was optioned) has more than one; most have exactly one.
+  const levels = LEVEL_ORDER.filter((l) => groupSeasons.some((s) => s.level === l));
+  // Default to the player's current level if they have stats there, else the top.
+  const defaultLevel =
+    p.current_level && levels.includes(p.current_level) ? p.current_level : levels[0];
+  const [level, setLevel] = useState(defaultLevel);
+  const activeLevel = level && levels.includes(level) ? level : (defaultLevel ?? null);
+
+  const seasons = groupSeasons
+    .filter((s) => s.level === activeLevel)
     .sort((a, b) => b.season - a.season);
   const current = seasons[0];
   const chartAvg = current && cfg.chart ? Number(current.stats[cfg.chart.key]) : NaN;
@@ -324,6 +349,18 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
           {p.throws ? ` · 투구 ${p.throws}` : ""}
         </p>
       </header>
+
+      {levels.length > 1 ? (
+        <Tabs value={activeLevel ?? undefined} onValueChange={setLevel}>
+          <TabsList>
+            {levels.map((l) => (
+              <TabsTrigger key={l} value={l}>
+                {l}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      ) : null}
 
       {current ? (
         <section className="flex flex-col gap-3">
@@ -354,7 +391,12 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
       )}
 
       {cfg.chart ? (
-        <ChartSection playerId={playerId} label={cfg.chart.label} seasonAvg={seasonAvg} />
+        <ChartSection
+          playerId={playerId}
+          level={activeLevel}
+          label={cfg.chart.label}
+          seasonAvg={seasonAvg}
+        />
       ) : null}
 
       <section className="flex flex-col gap-3">
@@ -372,7 +414,12 @@ export function PlayerDetail({ playerId }: { playerId: number }) {
             )}
           </TabsContent>
           <TabsContent value="games">
-            <GamesTable playerId={playerId} group={cfg.group} cols={cfg.gameCols} />
+            <GamesTable
+              playerId={playerId}
+              group={cfg.group}
+              level={activeLevel}
+              cols={cfg.gameCols}
+            />
           </TabsContent>
         </Tabs>
       </section>
