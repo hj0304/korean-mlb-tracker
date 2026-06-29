@@ -6,7 +6,7 @@ appeared. Completed games only -- live/scheduled games are skipped (see CLAUDE.m
 """
 
 import asyncio
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import func, select
@@ -18,17 +18,26 @@ from app.db.session import get_session_maker
 from app.services import mlb_client
 from app.services.stats_transformer import transform_game_log
 
+# Korea has had no DST since 1988 and is permanently UTC+9, so a fixed offset is
+# correct and avoids depending on a system tz database (absent on Windows).
+_KST = timezone(timedelta(hours=9))
+
 
 def extract_completed_games(
     schedule: dict[str, Any],
-) -> list[tuple[int, str, frozenset[int]]]:
-    """Schedule response -> ``(game_pk, official_date, team_ids)`` per completed game.
+) -> list[tuple[int, date, frozenset[int]]]:
+    """Schedule response -> ``(game_pk, game_date, team_ids)`` per completed game.
+
+    ``game_date`` is the game's calendar date in KST, derived from the UTC
+    ``gameDate`` timestamp -- a US night game falls on the next day in Korea,
+    and that's the date our (Korean) users expect. (The API's ``officialDate``
+    is the venue-local US date, which lags one day behind KST.)
 
     ``team_ids`` are the home+away team ids, used by the caller to keep only
     games a tracked player's team played in (MiLB has hundreds of games a day).
     Skips anything not ``Final`` (live, scheduled, postponed).
     """
-    games: list[tuple[int, str, frozenset[int]]] = []
+    games: list[tuple[int, date, frozenset[int]]] = []
     for day in schedule.get("dates", []):
         for game in day.get("games", []):
             if game["status"]["abstractGameState"] != "Final":
@@ -39,7 +48,8 @@ def extract_completed_games(
                 for side in ("home", "away")
                 if (teams.get(side) or {}).get("team", {}).get("id") is not None
             )
-            games.append((game["gamePk"], game["officialDate"], team_ids))
+            game_date = datetime.fromisoformat(game["gameDate"]).astimezone(_KST).date()
+            games.append((game["gamePk"], game_date, team_ids))
     return games
 
 
@@ -67,9 +77,9 @@ async def run(game_date: date | None = None) -> None:
             ]
         # Keep only completed games one of our teams played in.
         games = [
-            (game_pk, official_date)
+            (game_pk, game_day)
             for task in schedule_tasks
-            for game_pk, official_date, game_team_ids in extract_completed_games(task.result())
+            for game_pk, game_day, game_team_ids in extract_completed_games(task.result())
             if game_team_ids & team_ids
         ]
         if not games:
@@ -82,11 +92,10 @@ async def run(game_date: date | None = None) -> None:
             }
 
     rows: list[dict[str, Any]] = []
-    for game_pk, official_date in games:
+    for game_pk, game_day in games:
         boxscore = boxscores[game_pk].result()
-        game_day = date.fromisoformat(official_date)
         for pid in player_ids:
-            for row in transform_game_log(boxscore, pid, game_pk, official_date):
+            for row in transform_game_log(boxscore, pid, game_pk, game_day.isoformat()):
                 row["game_date"] = game_day  # Date column wants a date, not the ISO string
                 rows.append(row)
 
@@ -97,7 +106,11 @@ async def run(game_date: date | None = None) -> None:
     stmt = pg_insert(GameLog).values(rows)
     stmt = stmt.on_conflict_do_update(
         index_elements=["player_id", "game_id", "group_name"],
-        set_={"stats": stmt.excluded.stats, "fetched_at": func.now()},
+        set_={
+            "game_date": stmt.excluded.game_date,
+            "stats": stmt.excluded.stats,
+            "fetched_at": func.now(),
+        },
     )
 
     async with session_maker() as session:

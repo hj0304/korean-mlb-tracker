@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -15,8 +16,9 @@ def test_extract_completed_games() -> None:
     schedule = _load("schedule_2026-04-06.json")
     games = daily_games.extract_completed_games(schedule)
     assert len(games) == 13
-    assert (822832, "2026-04-06") in {(pk, d) for pk, d, _ in games}
-    assert all(isinstance(pk, int) and isinstance(d, str) for pk, d, _ in games)
+    # gameDate 2026-04-06T23:07:00Z (US night) is 2026-04-07 in KST.
+    assert (822832, date(2026, 4, 7)) in {(pk, d) for pk, d, _ in games}
+    assert all(isinstance(pk, int) and isinstance(d, date) for pk, d, _ in games)
 
 
 def test_extract_completed_games_captures_team_ids() -> None:
@@ -33,7 +35,7 @@ def test_extract_completed_games_skips_unfinished() -> None:
                 "games": [
                     {
                         "gamePk": 1,
-                        "officialDate": "2026-04-06",
+                        "gameDate": "2026-04-06T23:07:00Z",
                         "status": {"abstractGameState": "Final"},
                         "teams": {
                             "home": {"team": {"id": 10}},
@@ -42,16 +44,18 @@ def test_extract_completed_games_skips_unfinished() -> None:
                     },
                     {
                         "gamePk": 2,
-                        "officialDate": "2026-04-06",
+                        "gameDate": "2026-04-06T23:07:00Z",
                         "status": {"abstractGameState": "Live"},
                     },
                     {
                         "gamePk": 3,
-                        "officialDate": "2026-04-06",
+                        "gameDate": "2026-04-06T23:07:00Z",
                         "status": {"abstractGameState": "Preview"},
                     },
                 ]
             }
         ]
     }
-    assert daily_games.extract_completed_games(schedule) == [(1, "2026-04-06", frozenset({10, 20}))]
+    assert daily_games.extract_completed_games(schedule) == [
+        (1, date(2026, 4, 7), frozenset({10, 20}))
+    ]
