@@ -1,0 +1,53 @@
+name: etl-failure-alert
+
+# Opens a GitHub issue when any ETL cron fails, so a silently-broken job (the
+# crons run unattended at KST 15:00–16:00) gets noticed. Uses workflow_run so one
+# watcher covers all three ETL workflows instead of duplicating a failure step in
+# each. De-dupes: if an open issue for the same workflow already exists, it
+# comments on that one instead of filing a new issue every day.
+on:
+  workflow_run:
+    workflows: [etl-roster-sync, etl-daily-games, etl-season-stats]
+    types: [completed]
+
+permissions:
+  issues: write
+
+jobs:
+  alert:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const { owner, repo } = context.repo;
+            const title = `🔴 ETL 실패: ${run.name}`;
+            const body = [
+              `Workflow **${run.name}** 가 실패했습니다.`,
+              ``,
+              `- 실행 로그: ${run.html_url}`,
+              `- 브랜치: \`${run.head_branch}\``,
+              `- 커밋: ${run.head_sha}`,
+              `- 시작(UTC): ${run.run_started_at}`,
+            ].join('\n');
+
+            const open = await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: 'open', per_page: 100,
+            });
+            const match = open.find((i) => i.title === title);
+            if (match) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: match.number,
+                body: `다시 실패했습니다: ${run.html_url} (커밋 ${run.head_sha.slice(0, 7)})`,
+              });
+            } else {
+              // Ensure the label exists (422 = already there) so create won't fail.
+              try {
+                await github.rest.issues.createLabel({ owner, repo, name: 'etl-failure', color: 'd73a4a' });
+              } catch (e) {
+                if (e.status !== 422) throw e;
+              }
+              await github.rest.issues.create({ owner, repo, title, body, labels: ['etl-failure'] });
+            }

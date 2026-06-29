@@ -122,7 +122,7 @@
   - **결정 기록** 섹션 (왜 이 스택? 왜 JSONB?)
   - 향후 계획
 - [ ] **S3-03** 백엔드 OpenAPI 문서를 GitHub Pages 또는 redoc-static으로 호스팅, README에 링크
-- [ ] **S3-04** ETL 실패 시 GitHub 이슈 자동 생성 워크플로우
+- [x] **S3-04** ETL 실패 시 GitHub 이슈 자동 생성 워크플로우 — `workflow_run`으로 3개 ETL 워크플로 실패를 감시하는 단일 `etl-failure-alert.yml`. 같은 워크플로의 열린 이슈가 있으면 코멘트로 합쳐 중복 방지(`etl-failure` 라벨)
 - [ ] **S3-05** Vercel Analytics 또는 Plausible 설정
 - [ ] **S3-06** 작성한 ADR(아키텍처 결정 기록) 5개 정도를 `docs/adr/`에 별도 정리
 - [ ] **S3-07** 회고 노트 `docs/RETRO.md`: 무엇이 어려웠고 무엇을 배웠는지 (포트폴리오 인터뷰 무기)
