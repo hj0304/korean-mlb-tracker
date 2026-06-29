@@ -13,7 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from app.core.config import SPORT_ID_TO_LEVEL
-from app.db.models import GameLog, Player
+from app.db.models import GameLog, Player, SeasonStats
 from app.db.session import get_session_maker
 from app.services import mlb_client
 from app.services.stats_transformer import transform_game_log
@@ -62,8 +62,14 @@ async def run(game_date: date | None = None) -> None:
     async with session_maker() as session:
         result = await session.execute(select(Player.id, Player.current_team_id))
         roster = result.all()
+        # Also every team a tracked player has appeared for this season, not just
+        # their current one: a player optioned/promoted mid-season plays for a team
+        # that isn't current_team_id, and filtering on current alone would skip
+        # those games (current_team_id only refreshes when roster_sync runs).
+        season_team_ids = await session.execute(select(SeasonStats.team_id).distinct())
     player_ids = [pid for pid, _ in roster]
     team_ids = {tid for _, tid in roster if tid is not None}
+    team_ids |= {tid for (tid,) in season_team_ids.all() if tid is not None}
     if not team_ids:
         print("daily_games: roster has no current teams; run roster_sync first")
         return
