@@ -250,6 +250,28 @@
             ],
             "title": "Opponent Id"
           },
+          "opponent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Name"
+          },
+          "opponent_abbrev": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Abbrev"
+          },
           "is_home": {
             "anyOf": [
               {
@@ -337,6 +359,28 @@
               }
             ],
             "title": "Opponent Id"
+          },
+          "opponent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Name"
+          },
+          "opponent_abbrev": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Abbrev"
           },
           "is_home": {
             "anyOf": [

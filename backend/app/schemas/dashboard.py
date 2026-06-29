@@ -15,6 +15,8 @@ class DashboardGameOut(BaseModel):
     current_level: str | None
     player_type: str
     opponent_id: int | None
+    opponent_name: str | None = None
+    opponent_abbrev: str | None = None
     is_home: bool | None
     group_name: str
     stats: dict[str, Any]

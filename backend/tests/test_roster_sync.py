@@ -39,6 +39,17 @@ def test_build_player_row_milb_with_team() -> None:
     assert row["current_level"] == "A"
 
 
+def test_build_team_row() -> None:
+    team = _load(FIXTURES / "team_3705_columbia.json")["teams"][0]
+    assert roster_sync.build_team_row(team) == {
+        "id": 3705,
+        "name": "Columbia Fireflies",
+        "abbrev": "COL",
+        "league": "MiLB",  # Carolina League -> minor-league
+        "level": "A",  # sport id 14 = Single-A
+    }
+
+
 def test_sport_id_to_level_mapping() -> None:
     from app.core.config import SPORT_ID_TO_LEVEL
 

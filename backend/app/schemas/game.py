@@ -12,6 +12,8 @@ class GameLogOut(BaseModel):
     game_id: int
     game_date: date
     opponent_id: int | None
+    opponent_name: str | None = None
+    opponent_abbrev: str | None = None
     is_home: bool | None
     group_name: str
     stats: dict[str, Any]

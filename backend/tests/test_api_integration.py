@@ -35,6 +35,10 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     games = r.json()
     assert len(games) == 2
     assert games[0]["game_date"] == "2026-05-10"
+    # opponent_id resolves to the seeded team's name/abbrev
+    assert games[0]["opponent_id"] == 147
+    assert games[0]["opponent_abbrev"] == "NYY"
+    assert games[0]["opponent_name"] == "New York Yankees"
 
     # games: since filter
     r = await seeded_client.get("/api/v1/players/808975/games?since=2026-05-01")
@@ -58,6 +62,7 @@ async def test_players_api_end_to_end(seeded_client: AsyncClient) -> None:
     assert g["full_name_ko"] == "김혜성"
     assert g["current_level"] == "MLB"
     assert g["stats"]["hits"] == 1
+    assert g["opponent_abbrev"] == "NYY"
 
 
 async def test_endpoints_empty_db(empty_client: AsyncClient) -> None:

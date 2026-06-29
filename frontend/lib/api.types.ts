@@ -113,6 +113,10 @@ export interface components {
             player_type: string;
             /** Opponent Id */
             opponent_id: number | null;
+            /** Opponent Name */
+            opponent_name?: string | null;
+            /** Opponent Abbrev */
+            opponent_abbrev?: string | null;
             /** Is Home */
             is_home: boolean | null;
             /** Group Name */
@@ -145,6 +149,10 @@ export interface components {
             game_date: string;
             /** Opponent Id */
             opponent_id: number | null;
+            /** Opponent Name */
+            opponent_name?: string | null;
+            /** Opponent Abbrev */
+            opponent_abbrev?: string | null;
             /** Is Home */
             is_home: boolean | null;
             /** Group Name */

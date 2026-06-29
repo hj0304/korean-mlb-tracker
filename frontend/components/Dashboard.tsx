@@ -109,8 +109,11 @@ export function Dashboard() {
                   {g.current_level}
                 </span>
               ) : null}
-              <span className="whitespace-nowrap text-xs text-muted-foreground">
-                {g.is_home ? "vs" : "@"} {g.opponent_id ?? "-"}
+              <span
+                className="whitespace-nowrap text-xs text-muted-foreground"
+                title={g.opponent_name ?? undefined}
+              >
+                {g.is_home ? "vs" : "@"} {g.opponent_abbrev ?? g.opponent_id ?? "-"}
               </span>
             </div>
             <span className="whitespace-nowrap text-right text-sm tabular-nums">{lineFor(g)}</span>

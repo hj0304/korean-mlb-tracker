@@ -49,6 +49,9 @@ class _Result:
     def scalars(self) -> _Scalars:
         return _Scalars(self._items)
 
+    def all(self) -> Sequence[Any]:
+        return list(self._items)
+
 
 class _FakeSession:
     """Stub: execute() returns canned rows; get() returns a canned object.
@@ -140,7 +143,8 @@ def test_list_player_games() -> None:
         group_name="hitting",
         stats={"hits": 2, "homeRuns": 1},
     )
-    _use(_FakeSession(execute_items=[log]))
+    # The games query joins teams, so execute() yields (GameLog, name, abbrev) rows.
+    _use(_FakeSession(execute_items=[(log, "New York Yankees", "NYY")]))
     try:
         r = TestClient(app).get("/api/v1/players/808975/games")
     finally:
@@ -151,6 +155,9 @@ def test_list_player_games() -> None:
     assert body[0]["game_date"] == "2026-04-06"
     assert body[0]["is_home"] is False
     assert body[0]["stats"]["homeRuns"] == 1
+    assert body[0]["opponent_id"] == 141
+    assert body[0]["opponent_name"] == "New York Yankees"
+    assert body[0]["opponent_abbrev"] == "NYY"
 
 
 def test_list_player_games_empty_with_since() -> None:
