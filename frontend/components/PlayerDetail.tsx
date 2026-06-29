@@ -4,6 +4,7 @@ import { CalendarOff, Inbox } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
+import type { ChartMetric } from "@/components/RecentGamesChart";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -48,8 +49,9 @@ type StatConfig = {
   seasonTable: [string, string][];
   // 경기별기록 table columns.
   gameCols: [string, string][];
-  // Per-game batting-average trend chart (batters only for now).
-  chart: { key: string; label: string } | null;
+  // Per-game trend chart: which metric to plot, which season stat is the
+  // reference line, and the section heading.
+  chart: { metric: ChartMetric; refKey: string; label: string } | null;
 };
 
 const BATTER: StatConfig = {
@@ -103,7 +105,7 @@ const BATTER: StatConfig = {
     ["stolenBases", "도루"],
     ["groundIntoDoublePlay", "병살"],
   ],
-  chart: { key: "avg", label: "경기별 타율 추이" },
+  chart: { metric: "avg", refKey: "avg", label: "경기별 타율 추이" },
 };
 
 const PITCHER: StatConfig = {
@@ -148,7 +150,7 @@ const PITCHER: StatConfig = {
     ["baseOnBalls", "볼넷"],
     ["strikeOuts", "탈삼진"],
   ],
-  chart: null,
+  chart: { metric: "era", refKey: "era", label: "경기별 자책점 추이" },
 };
 
 function configFor(playerType: string): StatConfig {
@@ -236,32 +238,35 @@ function GamesTable({
 
 function ChartSection({
   playerId,
+  group,
   level,
+  metric,
   label,
-  seasonAvg,
+  seasonValue,
 }: {
   playerId: number;
+  group: string;
   level: string | null;
+  metric: ChartMetric;
   label: string;
-  seasonAvg: number | null;
+  seasonValue: number | null;
 }) {
   const games = usePlayerGames(playerId);
 
   if (games.isLoading) {
     return <Skeleton className="h-60 w-full rounded-md" />;
   }
-  const hitting =
-    games.data?.filter(
-      (g) => g.group_name === "hitting" && (level === null || g.level === level),
-    ) ?? [];
+  const rows =
+    games.data?.filter((g) => g.group_name === group && (level === null || g.level === level)) ??
+    [];
   // No chart when there's nothing to plot; the table tab still covers the data.
-  if (games.error || hitting.length === 0) {
+  if (games.error || rows.length === 0) {
     return null;
   }
   return (
     <section className="flex flex-col gap-3">
       <h2 className="text-lg font-semibold">{label}</h2>
-      <RecentGamesChart games={hitting} seasonAvg={seasonAvg} />
+      <RecentGamesChart games={rows} metric={metric} seasonValue={seasonValue} />
     </section>
   );
 }
@@ -334,8 +339,8 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
     .filter((s) => s.level === activeLevel)
     .sort((a, b) => b.season - a.season);
   const current = seasons[0];
-  const chartAvg = current && cfg.chart ? Number(current.stats[cfg.chart.key]) : NaN;
-  const seasonAvg = Number.isFinite(chartAvg) ? chartAvg : null;
+  const chartRef = current && cfg.chart ? Number(current.stats[cfg.chart.refKey]) : NaN;
+  const seasonValue = Number.isFinite(chartRef) ? chartRef : null;
 
   return (
     <div className="flex flex-col gap-8">
@@ -393,9 +398,11 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
       {cfg.chart ? (
         <ChartSection
           playerId={playerId}
+          group={cfg.group}
           level={activeLevel}
+          metric={cfg.chart.metric}
           label={cfg.chart.label}
-          seasonAvg={seasonAvg}
+          seasonValue={seasonValue}
         />
       ) : null}
 

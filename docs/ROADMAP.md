@@ -88,7 +88,7 @@
 
 #### 프론트엔드
 - [x] **S2-06** 탭/필터: 전체 + 존재하는 모든 레벨(MLB/AAA/AA/A+/A/루키), 선수 수 표시. 14명이라 클라이언트 필터(즉시 전환)
-- [ ] **S2-07** `RecentGamesChart.tsx`: Recharts로 최근 10경기 OPS/ERA 추이
+- [x] **S2-07** `RecentGamesChart.tsx`: Recharts로 경기별 추이 차트 — 타자=경기 타율(시즌 타율 기준선), 투수=경기 ERA(시즌 ERA 기준선). 단일 경기 지표라 OPS 대신 타율 사용(타석당 OPS는 잡음 큼). 투수 ERA는 짧은 등판이 20~30대로 튀어 정상 경기를 납작하게 만들므로 플롯값을 13.5로 캡(툴팁은 실제값), 레벨 탭과 연동
 - [x] **S2-08** 타자/투수 카드 디자인 분리 (조건부 렌더) — 상세 페이지를 player_type별 config로 분기(투수: ERA/WHIP/K9/이닝/승패세홀 등). 목록 카드는 스탯 미표시라 분기 불필요
 - [x] **S2-09** 다크 모드 토글 (next-themes) — 시스템 기본 + 고정 우상단 토글. 테마 토큰(.dark)은 이미 정의돼 있어 연결만
 - [x] **S2-10** OG 이미지, 메타데이터 (Next metadata API) — title/description/OG/twitter 메타 + 동적 opengraph-image(1200×630). "Create Next App" 제거. (OG 이미지는 satori 한글 미지원이라 영문)
