@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 // Dynamic OG image (1200x630). Text is English on purpose: the satori renderer
 // behind ImageResponse has no Korean font bundled, so Hangul wouldn't render.
-export const alt = "Korean MLB Tracker";
+export const alt = "태극기 펄럭이며 — Korean MLB Tracker";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,19 +17,25 @@ export default function Image() {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          gap: 24,
+          gap: 28,
           padding: "0 96px",
-          background: "linear-gradient(135deg, #0b1220 0%, #111827 60%, #1f2937 100%)",
-          color: "#f9fafb",
+          background: "#081C30",
+          color: "#F7F4EC",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", height: 10, width: 120, background: "#3b82f6" }} />
-        <div style={{ fontSize: 78, fontWeight: 800, letterSpacing: -2 }}>
-          Korean MLB Tracker
+        <svg width="120" height="120" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r="24" fill="#0047A0" />
+          <path
+            d="M4 28 A24 24 0 0 1 52 28 A12 12 0 0 1 28 28 A12 12 0 0 0 4 28 Z"
+            fill="#CD2E3A"
+          />
+        </svg>
+        <div style={{ fontSize: 76, fontWeight: 800, letterSpacing: -2 }}>
+          Taegeukgi Fluttering
         </div>
-        <div style={{ fontSize: 36, color: "#9ca3af" }}>
-          MLB &amp; MiLB Korean players — daily results and season stats
+        <div style={{ fontSize: 34, color: "#85B7EB" }}>
+          Korean MLB &amp; MiLB players — daily results and season stats
         </div>
       </div>
     ),

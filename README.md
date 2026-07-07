@@ -1,6 +1,8 @@
-# Korean MLB Tracker
+# 태극기 펄럭이며 (Korean MLB Tracker)
 
 미국 메이저리그(MLB)·마이너리그(MiLB)에서 뛰는 한국인 선수들의 **매일 경기 결과**와 **시즌 누적 스탯**을 한곳에 모아 보여주는 웹 앱입니다.
+
+> 서비스명은 **태극기 펄럭이며**, 레포/프로젝트 식별자는 `korean-mlb-tracker`를 유지합니다.
 
 [![Backend CI](https://github.com/hj0304/korean-mlb-tracker/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/hj0304/korean-mlb-tracker/actions/workflows/backend-ci.yml)
 [![Frontend CI](https://github.com/hj0304/korean-mlb-tracker/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/hj0304/korean-mlb-tracker/actions/workflows/frontend-ci.yml)

@@ -334,3 +334,4 @@ NEXT_PUBLIC_SENTRY_DSN=
 | 9 | `game_date`는 KST + ETL 크론 KST 16:00 | 한국 사용자의 "오늘"과 일치, 서부 경기까지 안전. `docs/adr/0006` |
 | 10 | 스탯을 레벨 차원으로 분리(`season_stats` PK에 level, `game_logs.level`) | 콜업/강등 선수의 레벨별 성적 보존. `docs/adr/0007` |
 | 11 | "명예 한국인"을 `is_honorary` 플래그로 별도 추적 | 대표팀 출전 비(非)한국출생 선수 포함하되 구분. `docs/adr/0008` |
+| 12 | 즐겨찾기용 로그인은 Supabase Auth (Google/카카오/이메일) | 비밀번호 비저장, DB와 같은 인프라, 백엔드는 JWT 검증만. 즐겨찾기는 로그인 필수. `docs/adr/0009` |
