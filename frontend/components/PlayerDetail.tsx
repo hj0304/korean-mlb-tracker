@@ -353,7 +353,7 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">{p.full_name_ko}</h1>
+          <h1 className="font-heading text-4xl font-normal tracking-tight">{p.full_name_ko}</h1>
           {p.is_honorary ? (
             <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
               명예 한국인
@@ -384,12 +384,14 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
 
       {current ? (
         <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold">{current.season} 시즌</h2>
-          <div className="grid grid-cols-4 gap-2 rounded-md border border-t-2 border-t-primary bg-muted/30 p-4">
+          <h2 className="font-heading text-xl font-normal">{current.season} 시즌</h2>
+          <div className="grid grid-cols-4 gap-2 rounded-md border border-t-2 border-t-primary bg-card p-4">
             {cfg.slash.map(([key, label]) => (
               <div key={key} className="text-center">
-                <div className="text-xs font-medium text-muted-foreground">{label}</div>
-                <div className="mt-1 text-2xl font-bold tabular-nums text-primary">
+                <div className="font-mono text-[11px] tracking-wider text-muted-foreground">
+                  {label}
+                </div>
+                <div className="mt-1 font-display text-3xl tracking-wide text-primary">
                   {stat(current.stats, key)}
                 </div>
               </div>
@@ -397,9 +399,9 @@ function PlayerDetailBody({ p, playerId }: { p: PlayerDetailData; playerId: numb
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {cfg.summary.map(([key, label]) => (
-              <div key={key} className="rounded-md border p-4 text-center">
+              <div key={key} className="rounded-md border bg-card p-4 text-center">
                 <div className="text-xs text-muted-foreground">{label}</div>
-                <div className="mt-1 text-2xl font-bold tabular-nums">
+                <div className="mt-1 font-display text-3xl tracking-wide">
                   {stat(current.stats, key)}
                 </div>
               </div>
