@@ -71,7 +71,7 @@ Strong success criteria → independent looping. Weak criteria ("make it work") 
 
 ### Project Overview
 
-**Korean MLB Tracker** is a portfolio web app that aggregates daily game results and season stats for Korean MLB/MiLB players in one place. Full-stack: Python/FastAPI backend, Next.js/TypeScript frontend, PostgreSQL on Supabase, scheduled ETL jobs hitting the unofficial MLB Stats API.
+**Korean MLB Tracker** (service name: **태극기 펄럭이며** — used for all user-facing copy; the repo/project identifier stays `korean-mlb-tracker`) is a portfolio web app that aggregates daily game results and season stats for Korean MLB/MiLB players in one place. Full-stack: Python/FastAPI backend, Next.js/TypeScript frontend, PostgreSQL on Supabase, scheduled ETL jobs hitting the unofficial MLB Stats API.
 
 Primary documents:
 - `docs/PRD.md` — what we are building and why
@@ -172,7 +172,7 @@ uv run python -m app.jobs.run --job=season_stats
 
 ### Current Sprint
 
-See `docs/ROADMAP.md` (source of truth for per-ticket status). Currently: **Sprint 1** (MVP — 김혜성 end-to-end). Sprint 0 complete; Sprint 1 backend (S1-01–S1-10) and frontend (S1-11–S1-16) done, S1-17–S1-20 remaining.
+See `docs/ROADMAP.md` (source of truth for per-ticket status). Currently: **Sprint 4** ("태극기 펄럭이며" — rebranding + login + favorites, S4-01–S4-05). Sprints 0–2 complete; Sprint 3 (polish/launch) partially done in parallel.
 
 When I say "start the next ticket", pick the lowest-numbered unchecked one in the current sprint.
 
@@ -197,7 +197,7 @@ npm run gen:types
 ### Things NOT To Do
 
 - Don't add live game polling. Completed-game data only.
-- Don't add auth, comments, or social features (PRD §3 Non-goals).
+- Don't add comments or social features (PRD §3 Non-goals). Auth exists solely for player favorites (Supabase Auth, ADR-0009) — don't expand it to anything else.
 - Don't normalize the `stats` JSONB into wide columns until a real query pattern demands it.
 - Don't call `statsapi.mlb.com` from anywhere other than `services/mlb_client.py`.
 - Don't use `any` in TypeScript.

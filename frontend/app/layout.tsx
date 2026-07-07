@@ -16,14 +16,15 @@ const geistMono = Geist_Mono({
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://korean-mlb-tracker-sabior-s-projects.vercel.app";
-const SITE_NAME = "한국인 MLB 트래커";
+const SITE_NAME = "태극기 펄럭이며";
+const TITLE = "태극기 펄럭이며 — 한국인 MLB · MiLB 트래커";
 const DESCRIPTION =
   "메이저리그(MLB)·마이너리그(MiLB)에서 뛰는 한국인 선수들의 매일 경기 결과와 시즌 스탯을 한곳에서.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "한국인 MLB · MiLB 선수 트래커",
+    default: TITLE,
     template: `%s · ${SITE_NAME}`,
   },
   description: DESCRIPTION,
@@ -32,12 +33,12 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     siteName: SITE_NAME,
     url: SITE_URL,
-    title: "한국인 MLB · MiLB 선수 트래커",
+    title: TITLE,
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "한국인 MLB · MiLB 선수 트래커",
+    title: TITLE,
     description: DESCRIPTION,
   },
 };
