@@ -112,7 +112,7 @@ export function RecentGamesChart({
         {seasonValue !== null ? (
           <ReferenceLine
             y={seasonValue}
-            stroke="#f97316"
+            stroke="#8b95a1"
             strokeDasharray="4 2"
             label={{
               value: `시즌 ${cfg.format(seasonValue)}`,
@@ -125,7 +125,7 @@ export function RecentGamesChart({
           type="monotone"
           dataKey="value"
           name={cfg.label}
-          stroke="#3b82f6"
+          stroke="#e23b2e"
           strokeWidth={2}
           dot={{ r: 3 }}
           connectNulls

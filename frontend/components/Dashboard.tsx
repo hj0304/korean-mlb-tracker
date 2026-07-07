@@ -20,7 +20,8 @@ function txt(stats: { [key: string]: unknown }, key: string): string {
 }
 
 // Compact one-line stat summary for a player's game.
-function lineFor(g: DashboardGame): string {
+// Exported for reuse by the landing score ticker.
+export function lineFor(g: DashboardGame): string {
   const s = g.stats;
   if (g.group_name === "pitching") {
     const parts = [`${txt(s, "inningsPitched")}이닝`, `${num(s, "earnedRuns")}자책`, `${num(s, "strikeOuts")}K`];
@@ -73,7 +74,7 @@ export function Dashboard() {
   if (!data || data.date === null || data.games.length === 0) {
     return (
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">최근 경기</h2>
+        <h2 className="font-heading text-xl font-normal">최근 경기</h2>
         <EmptyState message="최근 경기가 없습니다." icon={CalendarOff} />
       </section>
     );
@@ -84,8 +85,10 @@ export function Dashboard() {
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-semibold">최근 경기</h2>
-        <span className="text-sm text-muted-foreground">{data.date}</span>
+        <h2 className="font-heading text-xl font-normal">최근 경기</h2>
+        <span className="font-mono text-xs tracking-widest text-muted-foreground">
+          {data.date}
+        </span>
       </div>
 
       {highlights.length > 0 ? (
@@ -105,7 +108,7 @@ export function Dashboard() {
                 {g.full_name_ko}
               </Link>
               {g.current_level ? (
-                <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] tracking-wider text-muted-foreground">
                   {g.current_level}
                 </span>
               ) : null}

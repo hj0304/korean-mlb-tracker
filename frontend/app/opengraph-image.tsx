@@ -19,24 +19,22 @@ export default function Image() {
           justifyContent: "center",
           gap: 28,
           padding: "0 96px",
-          background: "#081C30",
-          color: "#F7F4EC",
+          background: "#07090c",
+          color: "#eef2f6",
           fontFamily: "sans-serif",
         }}
       >
-        <svg width="120" height="120" viewBox="0 0 56 56">
-          <circle cx="28" cy="28" r="24" fill="#0047A0" />
-          <path
-            d="M4 28 A24 24 0 0 1 52 28 A12 12 0 0 1 28 28 A12 12 0 0 0 4 28 Z"
-            fill="#CD2E3A"
-          />
+        <svg width="110" height="110" viewBox="0 0 26 26">
+          <circle cx="13" cy="13" r="12" fill="#eef2f6" />
+          <circle cx="13" cy="13" r="5.7" fill="none" stroke="#e23b2e" strokeWidth="1.2" />
         </svg>
         <div style={{ fontSize: 76, fontWeight: 800, letterSpacing: -2 }}>
           Taegeukgi Fluttering
         </div>
-        <div style={{ fontSize: 34, color: "#85B7EB" }}>
+        <div style={{ fontSize: 34, color: "#8b95a1" }}>
           Korean MLB &amp; MiLB players — daily results and season stats
         </div>
+        <div style={{ display: "flex", height: 8, width: 140, background: "#e23b2e" }} />
       </div>
     ),
     size,
