@@ -6,7 +6,7 @@ import type { Player } from "@/lib/api";
 export function PlayerCard({ player }: { player: Player }) {
   return (
     <Link href={`/players/${player.id}`} className="block">
-      <Card className="h-full transition-colors hover:bg-accent">
+      <Card className="h-full transition-colors hover:border-primary/40 hover:bg-accent">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {player.full_name_ko}

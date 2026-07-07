@@ -55,7 +55,7 @@ export function Dashboard() {
     return (
       <section className="flex flex-col gap-3">
         <Skeleton className="h-7 w-28 rounded-md" />
-        <div className="divide-y rounded-md border">
+        <div className="divide-y rounded-xl border bg-card">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="px-4 py-2.5">
               <Skeleton className="h-5 w-full rounded-md" />
@@ -89,12 +89,12 @@ export function Dashboard() {
       </div>
 
       {highlights.length > 0 ? (
-        <p className="rounded-md border border-t-2 border-t-primary bg-muted/30 p-3 text-sm">
+        <p className="rounded-lg border border-red-200/80 bg-red-50 p-3 text-sm text-red-950 dark:border-red-500/25 dark:bg-red-950/35 dark:text-red-100">
           🔥 <span className="font-medium">오늘의 활약</span> · {highlights.join(", ")}
         </p>
       ) : null}
 
-      <ul className="divide-y rounded-md border">
+      <ul className="divide-y rounded-xl border bg-card">
         {data.games.map((g) => (
           <li
             key={`${g.player_id}-${g.group_name}`}
