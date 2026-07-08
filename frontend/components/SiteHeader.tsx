@@ -1,14 +1,14 @@
 import Link from "next/link";
 
-import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { WavingTaegeukgi } from "@/components/WavingTaegeukgi";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-3">
         <Link href="/" className="flex items-center gap-2.5">
-          <BrandLogo className="h-6 w-6" />
+          <WavingTaegeukgi className="h-6 w-9" />
           <span className="font-heading text-lg leading-none tracking-tight">
             태극기 펄럭이며
           </span>
