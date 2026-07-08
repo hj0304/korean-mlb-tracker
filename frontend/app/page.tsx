@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { BrandLogo } from "@/components/BrandLogo";
 import { LandingTicker } from "@/components/LandingTicker";
 import { TodayLabel } from "@/components/TodayLabel";
+import { WavingTaegeukgi } from "@/components/WavingTaegeukgi";
 
 const ACCENT = "#e23b2e";
 
@@ -72,7 +72,7 @@ export default function LandingPage() {
       {/* top bar */}
       <header className="relative z-10 flex items-center justify-between px-[clamp(24px,5vw,72px)] py-6">
         <div className="flex items-center gap-3">
-          <BrandLogo className="h-[26px] w-[26px]" />
+          <WavingTaegeukgi className="h-[26px] w-[39px]" />
           <span className="font-heading text-xl leading-none tracking-tight">
             태극기 펄럭이며
           </span>
